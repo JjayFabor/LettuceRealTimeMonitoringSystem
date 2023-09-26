@@ -4,7 +4,6 @@ from MLAlgo.src.exception import CustomException
 from MLAlgo.src.logger import logging
 import pandas as pd
 
-from sklearn.preprocessing import MinMaxScaler
 from dataclasses import dataclass
 
 
@@ -44,18 +43,15 @@ class DataEngineering:
 
         return df
     
-    def initiate_data_engineering(self):
+    def initiate_data_engineering(self, df):
         logging.info("Starting data engineering.")
         try:
-            df = pd.read_csv(csv_file_path)
-            logging.info("Reading the dataset")
-            df = self.create_lagged_features(df)
+            print("dataframe columns", df.columns)
             cleaned_df = df.dropna()
 
             cleaned_df.to_csv(self.engineering_config.data_engineered_path, index=False, header=True)
             logging.info("Create lagging features completed")
-
-            return self.engineering_config.data_engineered_path
+            return cleaned_df
     
         except Exception as e:
             raise CustomException(e, sys)
