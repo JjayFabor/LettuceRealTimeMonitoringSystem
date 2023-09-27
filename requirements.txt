@@ -5,4 +5,5 @@ matplotlib
 scikit-learn
 dill
 Flask
+pyserial
 -e .
