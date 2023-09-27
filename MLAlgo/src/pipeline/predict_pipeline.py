@@ -5,6 +5,7 @@ from MLAlgo.src.exception import CustomException
 from MLAlgo.src.utils import load_object
 from MLAlgo.src.components.data_engineering import DataEngineering
 
+csv_df = pd.read_csv('artifacts\cleaned_df.csv')
 
 class PredictPipeline:
     def __init__(self):
@@ -17,71 +18,37 @@ class PredictPipeline:
             return df
         except Exception as e:
             raise CustomException(e, sys)
-        
-    # def feature_scaling(self, features):
-    #     try:
-    #         preprocess_path = 'artifacts\preprocessor.pkl'
-    #         preprocessor = load_object(file_path=preprocess_path)
-    #         feature_engineering = DataEngineering()
-            
-    #         features_df = pd.DataFrame(features, columns=['Date', 'Temperature (°C)', 'Humidity (%)', 'pH Level', 'TDS Value (ppm)'])
 
-    #         # Debug: Print the shape and type of the input DataFrame
-    #         print(f"Original features shape: {features_df.shape}, type: {type(features_df)}")
-    #         #Ensure that the input DataFrame has the expected column names
-    #         expected_columns = ['Date', 'Temperature (°C)', 'Humidity (%)', 'pH Level', 'TDS Value (ppm)']
-    #         missing_columns = [col for col in expected_columns if col not in features_df.columns]
-    #         if missing_columns:
-    #             raise CustomException(f"Missing columns in features: {missing_columns}", sys)
-
-    #         engineered_features = feature_engineering.create_lagged_features(features_df)
-            
-    #         # Debug: Print the shape and type of the engineered features
-    #         print(f"Engineered features shape: {engineered_features.shape}, type: {type(engineered_features)}")
-            
-    #         cleaned_df = feature_engineering.initiate_data_engineering(engineered_features)
-            
-    #         print(f"Cleaned DataFrame shape: {cleaned_df.shape}, type: {type(cleaned_df)}")
-    #         print(cleaned_df)
-
-    #         data_scaled = preprocessor.transform(cleaned_df)
-            
-    #         # Debug: Print the shape and type of the scaled data
-    #         print(f"Scaled data shape: {data_scaled.shape}, type: {type(data_scaled)}")
-             
-    #         # Ensure data_scaled is a 2D array
-    #         if len(data_scaled.shape) == 1:
-    #             data_scaled = data_scaled.reshape(-1, 1)
-
-    #         print(data_scaled)
-    #         return data_scaled
-    #     except Exception as e:
-    #         raise CustomException(e, sys)
-
-    def predict_days(self, features):
+    def preprocess_data(self, features):
         try:
-            model_path = 'artifacts/model.pkl'
-            model = load_object(file_path=model_path)
-
             preprocess_path = 'artifacts\preprocessor.pkl'
             preprocessor = load_object(file_path=preprocess_path)
             feature_engineering = DataEngineering()
 
             engineered_features = feature_engineering.create_lagged_features(features)
-
             cleaned_df = feature_engineering.initiate_data_engineering(engineered_features)
-            # Call feature_scaling to obtain scaled data
+
             scaled_data = preprocessor.transform(cleaned_df)
 
-            preds = model.predict(scaled_data)
-            
-            # Debug: Print the shape and type of the predictions
-            print(f"Predictions shape: {preds.shape}, type: {type(preds)}")
-            
-            return preds
+            return scaled_data, cleaned_df
         except Exception as e:
             raise CustomException(e, sys)
 
+    def predict_days(self, features):
+        try:
+            scaled_data, cleaned_df = self.preprocess_data(features)
+
+            model_path = 'artifacts/model.pkl'
+            model = load_object(file_path=model_path)
+
+            preds = model.predict(scaled_data)
+            # Create a DataFrame with 'Plant_ID' and 'Predictions'
+            predictions_df = pd.DataFrame({'Plant_ID': cleaned_df['Plant_ID'], 'Predictions': preds})
+
+            predicted_day = predictions_df.groupby('Plant_ID')['Predictions'].mean().round(2).reset_index()
+            return predicted_day
+        except Exception as e:
+            raise CustomException(e, sys)
 
 class CustomData:
     def __init__(self, csv_file_path: str):

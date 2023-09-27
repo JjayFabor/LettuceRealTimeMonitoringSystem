@@ -19,6 +19,7 @@ class DataEngineering:
         self.engineering_config = DataEngineeringConfig()
 
     def create_lagged_features(self, df):
+
         # Convert 'Date' column to datetime and set it as index
         df['Date'] = pd.to_datetime(df['Date'])
         df.set_index('Date', inplace=True)
@@ -46,11 +47,11 @@ class DataEngineering:
     def initiate_data_engineering(self, df):
         logging.info("Starting data engineering.")
         try:
-            print("dataframe columns", df.columns)
             cleaned_df = df.dropna()
 
             cleaned_df.to_csv(self.engineering_config.data_engineered_path, index=False, header=True)
             logging.info("Create lagging features completed")
+            
             return cleaned_df
     
         except Exception as e:

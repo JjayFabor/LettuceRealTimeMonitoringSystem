@@ -37,7 +37,7 @@ def predict_datapoint():
             # Check if the file is a CSV file
             if file and file.filename.endswith('.csv'):
                 # Save the uploaded file to a temporary location
-                uploaded_file_path = 'temp.csv'  # Change this to your desired temporary location
+                uploaded_file_path = 'new_data.csv'
                 file.save(uploaded_file_path)
 
                 # Create an instance of CustomData with the uploaded CSV file path
@@ -45,15 +45,13 @@ def predict_datapoint():
 
                 data_df = data.get_data_as_dataframe()
 
-                final_df = data_df.drop('Plant_ID', axis=1)
-
                 predict_pipeline = PredictPipeline()
+                preds = predict_pipeline.predict_days(data_df)
+                preds_dict = preds.to_dict(orient='records')
+                
+                print('Predictions Completed...')
 
-                results = predict_pipeline.predict_days(final_df)
-
-                print(final_df)
-
-                return render_template('index.html', results=results)
+                return render_template('index.html', grouped_predictions=preds_dict)
 
             else:
                 flash('Invalid file format. Please upload a CSV file.')
