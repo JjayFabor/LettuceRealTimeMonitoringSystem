@@ -15,7 +15,7 @@ Follow these steps to get the application up and running on your local machine.
 
    ```bash
    git clone https://github.com/JjayFabor/Thesis.git
-   cd lettuce-growth-prediction
+   cd Thesis
    pip install -r requirements.txt
    python app.py
 
