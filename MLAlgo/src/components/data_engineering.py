@@ -44,9 +44,12 @@ class DataEngineering:
 
         return df
     
-    def initiate_data_engineering(self, df):
+    def initiate_data_engineering(self):
         logging.info("Starting data engineering.")
         try:
+            df = pd.read_csv(csv_file_path)
+            df = self.create_lagged_features(df)
+
             cleaned_df = df.dropna()
 
             cleaned_df.to_csv(self.engineering_config.data_engineered_path, index=False, header=True)
