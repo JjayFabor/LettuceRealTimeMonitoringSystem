@@ -15,8 +15,8 @@ Follow these steps to get the application up and running on your local machine.
 
    ```bash
    git clone https://github.com/JjayFabor/Thesis.git
-   cd Thesis
    pip install -r requirements.txt
+   cd Thesis/FlaskWebApp
    python app.py
 
 How to Use
