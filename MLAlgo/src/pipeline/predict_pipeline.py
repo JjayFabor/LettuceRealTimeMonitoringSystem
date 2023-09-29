@@ -4,8 +4,13 @@ import numpy as np
 from MLAlgo.src.exception import CustomException
 from MLAlgo.src.utils import load_object
 from MLAlgo.src.components.data_engineering import DataEngineering
+import os
 
-csv_df = pd.read_csv('artifacts\cleaned_df.csv')
+# Construct the absolute path to the CSV file
+csv_file_path = os.path.join('artifacts', 'cleaned_df.csv')
+
+# Now, read the CSV file using the absolute path
+csv_df = pd.read_csv(csv_file_path)
 
 class PredictPipeline:
     def __init__(self):
@@ -27,7 +32,6 @@ class PredictPipeline:
 
             engineered_features = feature_engineering.create_lagged_features(features)
             cleaned_df = feature_engineering.initiate_data_engineering(engineered_features)
-
             scaled_data = preprocessor.transform(cleaned_df)
 
             return scaled_data, cleaned_df
