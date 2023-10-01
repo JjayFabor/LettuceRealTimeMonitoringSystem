@@ -26,19 +26,17 @@ class DataTransformation:
         This funcition is responsible for transforming data
         '''
         try:
-            features = ['Temperature (°C)', 'Humidity (%)', 'TDS Value (ppm)',
-                        'pH Level', 'Temperature (°C) Lag 1',
-                        'Temperature (°C) Lag 2', 'Temperature (°C) Lag 3',
-                        'Temperature (°C) Lag 7', 'Humidity (%) Lag 1', 'Humidity (%) Lag 2',
-                        'Humidity (%) Lag 3', 'Humidity (%) Lag 7', 'pH Level Lag 1',
-                        'pH Level Lag 2', 'pH Level Lag 3', 'pH Level Lag 7',
-                        'TDS Value (ppm) Lag 1', 'TDS Value (ppm) Lag 2',
-                        'TDS Value (ppm) Lag 3', 'TDS Value (ppm) Lag 7',
-                        'Temperature (°C) Rolling Mean', 'Temperature (°C) Rolling Std',
-                        'Humidity (%) Rolling Mean', 'Humidity (%) Rolling Std',
-                        'pH Level Rolling Mean', 'pH Level Rolling Std',
-                        'TDS Value (ppm) Rolling Mean', 'TDS Value (ppm) Rolling Std',
-                        'Day of Week', 'Month']
+            features = ['Temperature', 'Humidity', 'TDS Value', 'pH Level',
+                    'Temperature Lag 1', 'Temperature Lag 2', 'Temperature Lag 3',
+                    'Temperature Lag 7', 'Humidity Lag 1', 'Humidity Lag 2',
+                    'Humidity Lag 3', 'Humidity Lag 7', 'TDS Value Lag 1',
+                    'TDS Value Lag 2', 'TDS Value Lag 3',
+                    'TDS Value Lag 7', 'pH Level Lag 1', 'pH Level Lag 2',
+                    'pH Level Lag 3', 'pH Level Lag 7', 'Temperature Rolling Mean',
+                    'Temperature Rolling Std', 'Humidity Rolling Mean',
+                    'Humidity Rolling Std', 'TDS Value Rolling Mean',
+                    'TDS Value Rolling Std', 'pH Level Rolling Mean',
+                    'pH Level Rolling Std', 'Day of Week', 'Month']
             
             pipeline = Pipeline(
                 steps=[
@@ -72,10 +70,10 @@ class DataTransformation:
 
             target_column_name = 'Growth Days'
 
-            input_feature_train_df=  train_df.drop(columns=[target_column_name], axis=1)
+            input_feature_train_df=  train_df.drop(columns=[target_column_name, 'Plant_ID'], axis=1)
             target_feature_train_df= train_df[target_column_name]
 
-            input_feature_test_df=  test_df.drop(columns=[target_column_name], axis=1)
+            input_feature_test_df=  test_df.drop(columns=[target_column_name, 'Plant_ID'], axis=1)
             target_feature_test_df= test_df[target_column_name]
 
             logging.info('Applying preprocessing object on train and test dataframe.')
@@ -99,3 +97,4 @@ class DataTransformation:
             )
         except Exception as e:
             raise CustomException(e, sys)
+    

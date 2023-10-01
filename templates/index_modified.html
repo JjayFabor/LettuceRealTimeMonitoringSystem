@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arduino Data Display</title>
+</head>
+<body>
+    <h1>Welcome to homepage</h1>
+
+    <h1>Lettuce Growth Days Prediction</h1>
+   
+    <h3>Upload a CSV File</h3>
+    <form method="POST" enctype="multipart/form-data">
+        <label for="csvFile">Select a CSV file:</label>
+        <input type="file" name="csvFile" id="csvFile" accept=".csv">
+        <br>
+        <input type="submit" value="Upload">
+    </form>
+
+    <h2>
+        The predictions are:
+        <table>
+            <tr>
+                <th>Plant ID</th>
+                <th>Predictions</th>
+            </tr>
+            {% if grouped_predictions %}
+                {% for prediction in grouped_predictions %}
+                    <tr>
+                        <td>{{ prediction['Plant_ID'] }}</td>
+                        <td>{{ prediction['Predictions'] }}</td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td colspan="2">No predictions available</td>
+                </tr>
+            {% endif %}
+        </table>
+    </h2>
+</body>
+</html>
+
+    <!-- Real-time Data Display -->
+    <div id="realTimeData">
+        <h2>Real-Time Data:</h2>
+        <pre id="dataDisplay"></pre>
+    </div>
+
+    <!-- Button to Fetch CSV files from Arduino -->
+    <button id="fetchCsvButton">Fetch CSV Files</button>
+
+    <!-- JavaScript to handle real-time data fetching and CSV fetching -->
+    <script>
+        // Function to fetch real-time data from server
+        function fetchRealTimeData() {
+            // Use AJAX or WebSockets to fetch real-time data and display in 'dataDisplay' element
+        }
+
+        // Function to fetch .csv files from Arduino
+        document.getElementById('fetchCsvButton').addEventListener('click', function() {
+            // AJAX call to /fetch_csv route to trigger Arduino to send .csv files
+        });
+
+        // Fetch real-time data periodically
+        setInterval(fetchRealTimeData, 1000); // Update every 1 second
+    </script>

@@ -13,7 +13,6 @@ csv_file_path = os.path.abspath('MLAlgo/notebook/data/lettuce_dataset.csv')
 class DataEngineeringConfig:
     data_engineered_path = os.path.join('artifacts', 'cleaned_df.csv')
 
-
 class DataEngineering:
     def __init__(self):
         self.engineering_config = DataEngineeringConfig()
@@ -24,7 +23,7 @@ class DataEngineering:
             df.set_index('Date', inplace=True)
 
             # Creating lagged features for Temperature, Humidity, pH Level, and TDS Value
-            lag_features = ['Temperature (°C)', 'Humidity (%)', 'pH Level', 'TDS Value (ppm)']
+            lag_features = ['Temperature', 'Humidity', 'TDS Value',  'pH Level']
             lags = [1, 2, 3, 7]  # Lags of 1 day, 2 days, 3 days, and 7 days
 
             for feature in lag_features:
@@ -40,6 +39,7 @@ class DataEngineering:
             # Time-based features
             df['Day of Week'] = df.index.dayofweek + 1
             df['Month'] = df.index.month
+
             return df
         except Exception as e:
             raise CustomException(e, sys)
@@ -58,6 +58,7 @@ class DataEngineering:
         except Exception as e:
             raise CustomException(e, sys)
 
-if __name__ == '__main__':
-    obj = DataEngineering()
-    obj.initiate_data_engineering()
+# if __name__ == '__main__':
+#     df = pd.read_csv(csv_file_path)
+#     obj = DataEngineering()
+#     obj.initiate_data_engineering(df)

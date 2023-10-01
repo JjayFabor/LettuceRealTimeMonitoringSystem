@@ -4,40 +4,36 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Arduino Data Display</title>
+    <script>
+        function fetchPredictions() {
+            // Fetch predictions by making a POST request to the server
+            fetch('/', {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Check for error in the response
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                // Update the prediction display
+                document.getElementById('predictionDisplay').innerText = "The predicted value is: " + data.predictions;
+            })
+            .catch(error => {
+                console.error('Error fetching predictions:', error);
+            });
+        }
+
+    </script>
 </head>
 <body>
     <h1>Welcome to homepage</h1>
-
     <h1>Lettuce Growth Days Prediction</h1>
-   
-    <h3>Upload a CSV File</h3>
-    <form method="POST" enctype="multipart/form-data">
-        <label for="csvFile">Select a CSV file:</label>
-        <input type="file" name="csvFile" id="csvFile" accept=".csv">
-        <br>
-        <input type="submit" value="Upload">
-    </form>
-
-    <h2>
-        The predictions are:
-        <table>
-            <tr>
-                <th>Plant ID</th>
-                <th>Predictions</th>
-            </tr>
-            {% if grouped_predictions %}
-                {% for prediction in grouped_predictions %}
-                    <tr>
-                        <td>{{ prediction['Plant_ID'] }}</td>
-                        <td>{{ prediction['Predictions'] }}</td>
-                    </tr>
-                {% endfor %}
-            {% else %}
-                <tr>
-                    <td colspan="2">No predictions available</td>
-                </tr>
-            {% endif %}
-        </table>
-    </h2>
+    
+    <button onclick="fetchPredictions()">Get Predictions</button>
+    
+    <h1>Predictions</h1>
+    <p id="predictionDisplay">{{predictionDisplay}}</p>
 </body>
 </html>

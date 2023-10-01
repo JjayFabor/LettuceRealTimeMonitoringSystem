@@ -14,6 +14,7 @@ from MLAlgo.src.components.model_trainer import ModelTrainerConfig, ModelTrainer
 
 
 csv_file_path = os.path.abspath('artifacts\cleaned_df.csv')
+lettuce_path = os.path.abspath('MLAlgo/notebook/data/lettuce_dataset.csv')
 
 @dataclass
 class DataIngestionConfig:
