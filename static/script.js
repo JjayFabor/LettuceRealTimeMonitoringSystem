@@ -1,5 +1,5 @@
 let realTimeChart;
-let zoomLevel = 'time';
+let zoomLevel = 'date';
 let chart = null;
 let selectedDate = null;
 let ctx;
@@ -98,6 +98,7 @@ function initializeCanvas() {
     console.log('Canvas initialized.');
 }
 
+// Zoom configuration
 let zoomConfig = {
     mode: 'x',
     zoom: {
@@ -107,22 +108,32 @@ let zoomConfig = {
         pinch: {
             enabled: true,
         },
+        // ... (your existing properties)
         onZoom: function ({ chart }) {
-            const xScale = chart.scales['x'];
-            const minDateIndex = Math.max(0, Math.floor(xScale.getValueForPixel(xScale.left)));
-            const maxDateIndex = Math.min(globalData.length - 1, Math.floor(xScale.getValueForPixel(xScale.right)));
+            console.log("Zoom event Triggered.");
+            console.log(chart.scales); // Log the scales to debug
 
-            if (minDateIndex !== maxDateIndex) {
-                // Zoom out to daily data if indices are different
-                selectedDate = null; // Set selectedDate to null for date-level zoom
-            } else if (minDateIndex >= 0 && minDateIndex < globalData.length) {
-                // Zoom in to minute-hourly data for the specific date
-                selectedDate = new Date(globalData[minDateIndex].Date); // Set selectedDate to the selected date
-            } else {
-                selectedDate = null; // Default to null if the indices are out of bounds
+            // Determine if we should switch between date and time level granularity
+            const xScale = chart.scales['x-axis-0'] || chart.scales.x;
+            
+            if (!xScale) {
+                console.error("Could not find x-axis scale");
+                return;
             }
 
-            console.log("Selected Date:", selectedDate); // Debugging: Log selectedDate
+            const pixelRange = xScale.right - xScale.left;
+            const dataRange = xScale.max - xScale.min;
+            const ratio = pixelRange / dataRange;
+
+            if (ratio < 0.05) {
+                zoomLevel = 'time';
+            } else {
+                zoomLevel = 'date';
+            }
+
+            updateChartData(zoomLevel, selectedDate);
+
+            console.log("Zoom level changed to: ", zoomLevel); // Debugging line
         },
     },
 };
@@ -171,7 +182,7 @@ function prepareData(zoomLevel, selectedDate, data) {
             datasets['pH Level'].push(dailyData[label]['pH Level'] / dailyData[label]['count']);
         });
 
-    } else if (zoomLevel === 'time' && selectedDate) {
+    } else if (zoomLevel === 'time') {
         // Logic for minute-hourly data for a specific day
         const filteredData = data.filter(entry => new Date(entry.Date).toDateString() === selectedDate);
 
@@ -235,11 +246,6 @@ function makeChart(zoomLevel, selectedDate, data) {
             plugins: {
                 zoom: zoomConfig,
             },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                },
-            },
         },
     });
 }
@@ -250,7 +256,7 @@ function updateChartData(zoomLevel, selectedDate) {
     console.log("Labels", labels);
     console.log("Datasets", datasets);
 
-    if (selectedDate && zoomLevel === 'time') {
+    if (zoomLevel === 'time') {
         // Include 'Time' in labels when zoomed in
         labels.forEach((label, index) => {
             labels[index] = `${label} ${selectedDate.toLocaleDateString()}`;
