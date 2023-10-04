@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <title>Arduino Sensor Data Display</title>
+</head>
+<body>
+    <h1>Real Time Sensor Data</h1>
+    <table>
+        <tr>
+            <th>Date</th>
+            <th>Temperature (°C)</th>
+            <th>Humidity (%)</th>
+            <th>TDS Value</th>
+            <th>pH Value</th>
+        </tr>
+        <tbody id="historical-data">
+            <!-- Historical data will be inserted here -->
+        </tbody>
+    </table>
+    
+    <h1>Lettuce Growth Days Prediction</h1>
+    
+    <button onclick="fetchPredictions()">Get Predictions</button>
+    
+    <h1>Predictions</h1>
+    <p id="predictionDisplay">{{predictionDisplay}}</p>
+
+    <button id="transferButton">Transfer Data</button>
+    
+    <div>
+        <canvas id="myChart" width="400" height="400"></canvas>
+    </div>
+ 
+    <script>
+        function updateData() {
+            fetch('/data')
+                .then(response => response.json())
+                .then(data => {
+                    // Update historical data table
+                    const historicalData = document.getElementById('historical-data');
+                    historicalData.innerHTML = ''; // Clear previous data
+
+                    // Loop through historical data and create table rows
+                    for (let i = 0; i < data.date.length; i++) {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${data.date[i]}</td>
+                            <td>${data.temp[i]}</td>
+                            <td>${data.humidity[i]}</td>
+                            <td>${data.tds[i]}</td>
+                            <td>${data.ph[i]}</td>
+                        `;
+                        historicalData.appendChild(row);
+                    }
+                });
+        }
+
+        updateData(); // Initial data retrieval
+        setInterval(updateData, 12000); // Update data every second
+        
+        function fetchPredictions() {
+            // Fetch predictions by making a POST request to the server
+            fetch('/', {
+                method: 'POST',
+            })
+            .then(response => response.json())
+            .then(data => {
+                // Check for error in the response
+                if (data.error) {
+                    alert(data.error);
+                    return;
+                }
+                // Update the prediction display
+                document.getElementById('predictionDisplay').innerText = "The predicted value is: " + data.predictions;
+            })
+            .catch(error => {
+                console.error('Error fetching predictions:', error);
+            });
+        }
+
+        document.getElementById("transferButton").addEventListener("click", function() {
+                console.log("Transfer button clicked");
+                fetch("/transfer", {
+                    method: "POST",
+                })
+                .then(response => {
+                    // Check if the response has the "application/json" content type
+                    if (response.headers.get("content-type") && response.headers.get("content-type").includes("application/json")) {
+                        return response.json();
+                    } else {
+                        // If not JSON, treat it as text
+                        return response.text().then(text => {
+                            throw new Error(text);
+                        });
+                    }
+                })
+                .then(data => {
+                    if (data.status === "success") {
+                        alert("Data transfer successful");
+                    } else if (data.status === "error") {
+                        alert("Error during transfer: " + data.message);
+                    }
+                })
+                .catch(error => {
+                    console.error("Error:", error.message);
+                });
+            });
+        
+        let chart;
+
+        // Initialize the Chart.js chart
+        function initializeChart(labels, data) {
+            const ctx = document.getElementById('myChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Temperature',
+                        data: data,
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    },
+                    {
+                        label: 'Humidity',
+                        data: data,
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    },
+                    {
+                        label: 'TDS Value',
+                        data: data,
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    },
+                    {
+                        label: 'pH Value',
+                        data: data,
+                        fill: false,
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    scales: {
+                        x: {
+                            type: 'time',
+                            time: {
+                                displayFormats: {
+                                    millisecond: 'MMM DD, YYYY HH:mm:ss',
+                                    second: 'MMM DD, YYYY HH:mm:ss',
+                                    minute: 'MMM DD, YYYY HH:mm',
+                                    hour: 'MMM DD, YYYY HH:mm',
+                                    day: 'MMM DD, YYYY',
+                                }
+                            }
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        // Update the Chart.js chart with new data
+        function updateChart(labels, data) {
+            if (!chart) {
+                // Initialize the chart if it doesn't exist
+                initializeChart(labels, data);
+            } else {
+                // Update the chart data and labels
+                chart.data.labels = labels;
+                chart.data.datasets[0].data = data;
+                chart.update();
+            }
+        }
+    </script>
+</body>
+</html>

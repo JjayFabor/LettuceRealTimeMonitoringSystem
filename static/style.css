@@ -1,0 +1,18 @@
+.chart-container {
+    width: 45%; /* Adjust the width as needed */
+    height: 400px; /* Adjust the height as needed */
+    display: inline-block; /* Display the containers inline */
+    margin-right: 20px; /* Add some margin between the containers */
+}
+
+.chart-tooltip {
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.7); /* Background color with transparency */
+    color: #fff; /* Text color */
+    padding: 5px 10px; /* Padding around the tooltip content */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 12px; /* Font size */
+    z-index: 9999; /* Ensure it's on top of other elements */
+    pointer-events: none; /* Allow interactions with elements underneath */
+    display: none; /* Initially hide the tooltip */
+}

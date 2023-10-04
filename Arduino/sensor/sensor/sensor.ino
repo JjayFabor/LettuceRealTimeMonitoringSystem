@@ -31,7 +31,7 @@ void createSensorFile() {
     // Serial.println(F("Creating sensor.csv..."));
     File myFile = SD.open("sensor.csv", FILE_WRITE);
     if (myFile) {
-      myFile.println(F("Date,Temperature,Humidity,TDS Value,pH Level"));
+      //myFile.println(F("Date,Temperature,Humidity,TDS Value,pH Level"));
       myFile.close();
       // Serial.println(F("sensor.csv created."));
     }
@@ -51,7 +51,7 @@ void setup() {
   // Serial.println(F("SD card initialized."));
   createSensorFile();
   Wire.begin();
-  rtc.begin();
+  rtc.begin();  
   rtc.adjust(DateTime(F(__DATE__), F(__TIME__)));
   gravityTds.setPin(TDS_PIN);
   gravityTds.setAref(5.0);
@@ -64,7 +64,7 @@ void loop() {
   unsigned long current_time = millis();
 
   // Check if 10 seconds have passed; if so, read sensor data
-  if (current_time - last_time >= 10000) {
+  if (current_time - last_time >= 60000) {
     last_time = current_time;
     getSensorValues();
   }
@@ -81,8 +81,10 @@ void loop() {
   
 void getSensorValues() {
   char dateStr[32];
+  char timeStr[32];
   DateTime now = rtc.now();
-  sprintf(dateStr, "%02d/%02d/%02d", now.month(), now.day(), now.year());
+  sprintf(dateStr, "%02d/%02d/%04d", now.month(), now.day(), now.year());
+  sprintf(timeStr, "%02d:%02d", now.hour(), now.minute());
   DHT.read11(DHT11_PIN);
   dhtTemp = DHT.temperature;
   float hum = DHT.humidity;
@@ -123,6 +125,8 @@ void getSensorValues() {
   // Store sensor data in the SD card
   dataFile = SD.open("sensor.csv", FILE_WRITE);
   if (dataFile) {
+    dataFile.print(timeStr);
+    dataFile.print(',');
     dataFile.print(dateStr);
     dataFile.print(',');
     dataFile.print(dhtTemp);
@@ -135,6 +139,8 @@ void getSensorValues() {
     dataFile.close();
     Serial.print(dateStr);
     Serial.print(',');
+//    Serial.print(timeStr);
+//    Serial.print(',');
     Serial.print(dhtTemp);
     Serial.print(',');
     Serial.print(hum);
