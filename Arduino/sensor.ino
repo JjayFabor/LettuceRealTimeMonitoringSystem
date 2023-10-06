@@ -64,7 +64,7 @@ void loop() {
   unsigned long current_time = millis();
 
   // Check if 10 seconds have passed; if so, read sensor data
-  if (current_time - last_time >= 60000) {
+  if (current_time - last_time >= 10000) {
     last_time = current_time;
     getSensorValues();
   }

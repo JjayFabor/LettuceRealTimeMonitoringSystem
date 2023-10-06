@@ -26,8 +26,8 @@ CSV_FILENAME = "sensor_data.csv"
 receiving_file = False
 arduino = None
 last_update_time = None
-last_written_time = 0
 
+# Initialize serial port connection
 try:
     arduino = serial.Serial('COM3', 9600, timeout=1)
     time.sleep(1)  # Wait for the Serial connection to initialize
@@ -43,6 +43,7 @@ except Exception as e:
 def index():
     return render_template('index.html')
 
+# Function to get the data real time in the arduino serial monitor
 @app.route('/data')
 def data():
     global arduino
@@ -51,18 +52,12 @@ def data():
             raise Exception("Serial port not connected.")
         else:
             raw_data = arduino.readline().decode().strip()
-            print(f"Raw data: {raw_data}")
-
-            # Validate the received data
             data = raw_data.split(',')
 
-            # Check if the length of received data is the same as expected
-            # Exclude the 'timestamps' key during this check if it exists
             expected_length = len(sensor_data) - ('timestamps' in sensor_data)
             if len(data) != expected_length:
                 raise Exception(f"Invalid data received: {data}")
 
-            # Append current sensor data to lists, excluding 'undefined' values
             for key, value in zip(sensor_data.keys(), data):
                 if value != 'undefined':
                     sensor_data[key].append(value)
@@ -79,17 +74,13 @@ def data():
                 sensor_data['timestamps'] = []
             sensor_data['timestamps'].append(current_time)
 
-            # # Ensure the length of 'timestamps' matches with other data
-            # if len(sensor_data['timestamps']) > max_data_points:
-            #     sensor_data['timestamps'] = sensor_data['timestamps'][-max_data_points:]
-
         print(sensor_data)
         return jsonify(sensor_data)
     
     except Exception as e:
         return str(e) 
     
-
+# Function to display the predicted growth days
 @app.route('/', methods=['GET', 'POST'])
 def predict_datapoint():
     if request.method == 'GET':
@@ -110,7 +101,7 @@ def predict_datapoint():
         except Exception as e:
             return jsonify(error=str(e))
         
-
+# Function to retrieve the data from the sd card arduino to the app directory
 @app.route('/transfer', methods=['POST'])
 def transfer():
     global arduino, last_update_time
@@ -152,6 +143,44 @@ def transfer():
         print("Error: " + str(e))
         return jsonify({'status': 'error', 'message': str(e)})
 
+# Create an API to store the sensor data
+@app.route('/api/data', methods=['GET'])
+def get_sensor_data():
+    try:
+        csv_file_path = os.path.join(DATA_DIRECTORY, CSV_FILENAME)
+        df = pd.read_csv(csv_file_path)
+
+        data = {}
+
+        for index, row in df.iterrows():
+            date = row['Date']
+            time = row['Time']
+            temp = row['Temperature']
+            hum = row['Humidity']
+            tds = row['TDS Value']
+            ph = row['pH Level']
+
+            # Check if the date already exists in data
+            if date not in data:
+                data[date] = {
+                    "Date": date,
+                    "Records": []
+                }
+            data[date]['Records'].append({
+                "Time": time,
+                "Temperature": temp,
+                "Humidity": hum,
+                "TDS Value": tds,
+                "pH Level": ph
+            })
+
+            transformed_data = list(data.values())
+
+        return jsonify(transformed_data)
+    
+    except Exception as e:
+        return jsonify({'error': str(e)})
+    
 
 if __name__ == '__main__': 
     app.run(debug=True) # host='0.0.0.0', debug=True

@@ -13,40 +13,57 @@
     <title>Arduino Sensor Data Display</title>
 </head>
     <body>
-        <h1>Real Time Sensor Data</h1>
-        <table>
-            <tr>
-                <th>Time</th>
-                <th>Date</th>
-                <th>Temperature (°C)</th>
-                <th>Humidity (%)</th>
-                <th>TDS Value</th>
-                <th>pH Value</th>
-            </tr>
-            <tbody id="historical-data">
-                <!-- Historical data will be inserted here -->
-            </tbody>
-        </table>
-        
-        <h1>Lettuce Growth Days Prediction</h1>
-        
-        <button onclick="fetchPredictions()">Get Predictions</button>
-        
-        <h1>Predictions</h1>
-        <p id="predictionDisplay">{{predictionDisplay}}</p>
+        <div class="leftContainer">
+            <div class="realTime-data-display">
+                <h1>Real Time Sensor Data</h1>
+                <table>
+                    <tr>
+                        <th>Time</th>
+                        <th>Date</th>
+                        <th>Temperature (°C)</th>
+                        <th>Humidity (%)</th>
+                        <th>TDS Value</th>
+                        <th>pH Value</th>
+                    </tr>
+                    <tbody id="historical-data">
+                        <!-- Historical data will be inserted here -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="predict-container">
+                <h1>Lettuce Growth Days Prediction</h1>
+            
+                <button onclick="fetchPredictions()">Get Predictions</button>
+                
+                <h1>Predictions</h1>
+                <p id="predictionDisplay">{{predictionDisplay}}</p>
+            </div>
 
-        <button id="transferButton">Transfer Data</button>
-        
-        <div class="chart-container">
-            <h1>Previous Sensor Data Visualization</h1>
-            <canvas id="myChart" width="400" height="400"></canvas>
+            <button id="transferButton">Transfer Data</button>
         </div>
-        <div class="chart-container">
-            <h1>Real Time Sensor Data Visualizaton</h1>
-            <canvas id="realTimeChart" width="400" height="400"></canvas>
-        </div>    
-    
+        
+        <div class="rightContainer">
+            <div class="chart-container">
+                <div class="realTime-chart-container">
+                    <h2>Real Time Sensor Data Visualizaton</h2>
+                    <div class="realTime-chart">
+                        <canvas id="realtime-temp-hum-chart"></canvas>
+                        <canvas id="realtime-tds-chart"></canvas>
+                        <canvas id="realtime-ph-chart"></canvas>
+                    </div>
+                </div>
+                <h2>Previous Sensor Data Visualization</h2>
+                <div class="prevDay-chart">
+                        <canvas id="temp-hum-chart"></canvas>
+                        <canvas id="tds-chart"></canvas>
+                        <canvas id="ph-chart"></canvas>
+                </div>
+                <div class="buttons">
+                    <button id="mins-button">5 mins</button>
+                    <button id="daily-button">Daily</button>
+                </div>
+            </div>
+        </div>
         <script src="script.js"></script>
-        <!-- <script type="module" src="script.js"></script> -->
     </body>
 </html>
