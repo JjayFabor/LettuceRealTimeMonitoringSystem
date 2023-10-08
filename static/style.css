@@ -1,53 +1,115 @@
+* {
+    scroll-behavior: smooth;
+}
+
 body {
     margin: 0;
     margin-top: 20px;
     display: flex;
     flex-direction: row;
     height: calc(100vh - 20px); 
+    font-family: Arial, Helvetica, sans-serif;
 }
 
+button {
+    height: 40px; 
+    font-size: 16px; 
+    padding: 10px 20px; 
+    background-color: #007bff; 
+    color: #fff; 
+    border: none; 
+    cursor: pointer; 
+    border-radius: 5px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+canvas {
+    flex: 1;
+    margin: 0 10px;
+    height: 300px !important;
+    width: calc((100% - 40px) / 3) !important;
+}
+
+h1, h2 {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+hr {
+    max-width: 400px;
+    width: 45%;
+}
+
+table {
+    margin: 0 auto 1.5em auto;
+}
+
+table h4, table h5, table h6, table p {
+    line-height: 1.8em;
+    margin: 0;
+}
+
+td {
+    border: solid 0.1em black;
+    justify-content: center;
+    padding: 0 0.5em;
+    text-align: center;
+}
+
+th {
+    align-content: center;
+    align-items: center;
+    border: solid 0.1em black;
+    justify-content: center;
+    padding: 0 0.5em;
+    text-align: center;
+}
+
+.content {
+    margin-left: auto;
+    margin-right: auto;
+    width: 97%;
+}
+
+.row {
+    display: flex;
+    margin-left:-5px;
+    margin-right:-5px;
+}
 
 .leftContainer {
-    flex: 0.3;  /* Allocate 30% of the width */
+    flex: 30%;  /* Allocate 30% of the width */
     overflow-y: auto;
     padding: 5px;
+    text-align: center;
 }
 
 .rightContainer {
-    flex: 0.7;  /* Allocate 70% of the width */
+    flex: 70%; /* Allocate 70% of the width */
     overflow-y: auto;
     padding: 5px;
     box-sizing: border-box;
+    border-left: 2px solid #ccc;
+    margin-bottom: 3em;
 }
 
 
-.leftContainer > *:first-child,
-.rightContainer > *:first-child {
+.leftContainer > *:first-child, .rightContainer > *:first-child {
     margin-top: 5px;
-}
-
-.rightContainer {
-    border-left: 2px solid #ccc; 
 }
 
 .chart-container {
     display: flex;
     flex-direction: column;
     justify-content: space-around;
-    align-items: stretch;
+    align-items: center;
 }
 
-.realTime-chart-container,
-.prevDay-chart-container {
+.realTime-chart-container, .prevDay-chart-container {
     flex: 1; 
-    border-right: 2px solid #ccc; 
     padding: 5px;
     box-sizing: border-box;
-}
-
-h1 {
-    font-size: 1.5em;
-    margin-bottom: 20px;
 }
 
 .realTime-chart {
@@ -64,30 +126,6 @@ h1 {
     align-items: stretch;
 }
 
-h2 {
-    text-align: center;
-    margin-bottom: 20px;
-}
-
-canvas {
-    flex: 1;
-    margin: 0 10px;
-    height: 300px !important;
-    width: calc((100% - 40px) / 3) !important;
-}
-
-#daily-button, #mins-button {
-    width: 100px; 
-    height: 40px; 
-    font-size: 16px; 
-    padding: 10px 20px; 
-    background-color: #007bff; 
-    color: #fff; 
-    border: none; 
-    cursor: pointer; 
-    border-radius: 5px; 
-}
-
 #daily-button:hover, #mins-button:hover {
     background-color: #0056b3; 
 }
@@ -96,6 +134,21 @@ canvas {
     background-color: #003e80; 
 }
 
+/* When screen goes beloww max-width, apply following css, else default css above */
+@media only screen and (max-width: 1885px) { 
+    .row {
+        display: block;
+        margin-left:-5px;
+        margin-right:-5px;
+    }
+    .rightContainer {
+        flex: 70%; /* Allocate 70% of the width */
+        overflow-y: auto;
+        padding: 5px;
+        box-sizing: border-box;
+        border-left: none;
+    }
+}
 
 
 

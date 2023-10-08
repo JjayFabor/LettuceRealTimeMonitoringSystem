@@ -71,13 +71,14 @@ function updateData() {
             // Loop through historical data and create table rows
             for (let i = 0; i < sensorData.date.length; i++) {
                 const row = document.createElement('tr');
+                // Check if border is showing
                 row.innerHTML = `
-                    <td>${sensorData.timestamps[i]}</td>
-                    <td>${sensorData.date[i]}</td>
-                    <td>${sensorData.temp[i]}</td>
-                    <td>${sensorData.humidity[i]}</td>
-                    <td>${sensorData.tds[i]}</td>
-                    <td>${sensorData.ph[i]}</td>
+                    <td style='border: solid 0.1em black;'>${sensorData.timestamps[i]}</td>
+                    <td style='border: solid 0.1em black;'>${sensorData.date[i]}</td>
+                    <td style='border: solid 0.1em black;'>${sensorData.temp[i]}</td>
+                    <td style='border: solid 0.1em black;'>${sensorData.humidity[i]}</td>
+                    <td style='border: solid 0.1em black;'>${sensorData.tds[i]}</td>
+                    <td style='border: solid 0.1em black;'>${sensorData.ph[i]}</td>
                 `;
                 historicalData.appendChild(row);
             }
