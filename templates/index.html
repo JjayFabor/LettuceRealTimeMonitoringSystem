@@ -3,100 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
-    <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
-
-    <link rel="stylesheet" type="text/css" href="style.css">
-
-    <title>Arduino Sensor Data Display</title>
+    <title>Scrollable Page with Background Video</title>
+    <link rel="stylesheet" href="style.css">
 </head>
-    <body>
-        <div class="content">
-            <h1>Name of System</h1> <!--Change system name title or delete -->
-            <hr>
-            <div class="row">
-                <div class="leftContainer">
-                    <div class="realTime-data-display">
-                        <h1>Real Time Sensor Data</h1>
-                        <div style="overflow-x: auto;">
-                        <table>
-                            <tr>
-                                <th>Time</th>
-                                <th>Date</th>
-                                <th>Temperature (°C)</th>
-                                <th>Humidity (%)</th>
-                                <th>TDS Value</th>
-                                <th>pH Value</th>
-                            </tr>
-                            <tbody id="historical-data">
-                            <!-- Historical data will be inserted here -->
-                            
-                            <!-- For testing purposes only, check updateData function in script.js for actual.
-                                 All <tr> within <tbody> must be deleted afterwards. -->
-                            <tr>
-                                <td>09:19:30</td>
-                                <td>10/07/2023</td>
-                                <td>31.00</td>
-                                <td>80.00</td>
-                                <td>75.88</td>
-                                <td>6.90</td>
-                            </tr>
-                            <tr>
-                                <td>09:19:40</td>
-                                <td>10/07/2023</td>
-                                <td>31.00</td>
-                                <td>80.00</td>
-                                <td>38.11</td>
-                                <td>7.37</td>
-                            </tr>
-                            <tr>
-                                <td>09:19:50</td>
-                                <td>10/07/2023</td>
-                                <td>31.00</td>
-                                <td>80.00</td>
-                                <td>69.16</td>
-                                <td>7.40</td>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+<body>
+    <div class="main">
+        <nav class="navbar">
+            <div class="container">
+                <ul class="nav-links">
+                    <li><a href="/">Dashboard</a></li>
+                    <li><a href="/historicaldata">Historical Data</a></li>
+                    <li><a href="/growthPred">Growth Prediction</a></li>
+                    <li><a href="#">About/Help</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+        </nav>
+    
+        <video autoplay loop muted plays-inline class="back-video">
+            <source src="video.mp4" type="video/mp4">
+        </video>
 
-                <h1>Lettuce Growth Days Prediction</h1>
-                <button id="fetchPredictionsButton" onclick="fetchPredictions()">Get Predictions</button>
-                <h1>Predictions</h1>
-                <p id="predictionDisplay">{{predictionDisplay}}</p>
-                <button id="transferButton">Transfer Data</button>
-            </div>
-            
-            <div class="rightContainer">
-                <div class="chart-container">
-                    <div class="realTime-chart-container">
-                        <h2>Real Time Sensor Data Visualizaton</h2>
-                        <div class="realTime-chart">
-                            <canvas id="realtime-temp-hum-chart"></canvas>
-                            <canvas id="realtime-tds-chart"></canvas>
-                            <canvas id="realtime-ph-chart"></canvas>
-                        </div>
-                    </div>
-                    <br><br><br> <!-- Add space between real-time & previous visualization for cleaner view -->
-                    <div class="prevDay-chart-container">
-                        <h2>Previous Sensor Data Visualization</h2>
-                        <div class="prevDay-chart">
-                            <canvas id="temp-hum-chart"></canvas>
-                            <canvas id="tds-chart"></canvas>
-                            <canvas id="ph-chart"></canvas>
-                        </div>
-                    </div>
-                    <div class="buttons">
-                        <button id="mins-button">5 mins</button>
-                        <button id="daily-button">Daily</button>
-                    </div>
-                </div>
-            </div>
+        <div class="content">
+            <p>Real Time Monitoring System for Lettuce Plant Growth</p>
         </div>
-        <script src="script.js"></script>
-    </body>
+    </div>  
+</body>
 </html>

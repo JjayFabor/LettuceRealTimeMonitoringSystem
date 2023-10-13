@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito+Sans:opsz@6..12&family=Oswald:wght@300;700&display=swap" rel="stylesheet">
+    <title>Historical Data</title>
+    <link rel="stylesheet" href="historical.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="/">Real Time Monitoring</a></li>
+                <li><a href="/historicaldata" class="active">Historical Data</a></li>
+                <li><a href="/growthPred">Growth Prediction</a></li>
+                <li><a href="#">About/Help</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main>
+        <div class="prevDay-chart-container">
+            <h2>Previous Sensor Data Visualization</h2>
+            <div class="prevDay-chart">
+                <canvas id="temp-hum-chart"></canvas>
+                <canvas id="tds-chart"></canvas>
+                <canvas id="ph-chart"></canvas>
+            </div>
+        </div>
+        <div class="buttons">
+            <button type="button" id="mins-button">5 mins</button>
+            <label for="selected-date">Select a Date:</label>
+            <select id="selected-date" name="selected-date"></select>
+            <button type="button" id="daily-button">Daily</button>
+        </div>
+        <button type="button" id="transferButton">Transfer Data</button>
+
+    </main>
+    <script src="historical.js"></script>
+</body>
+</html>

@@ -41,7 +41,15 @@ except Exception as e:
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('realtime.html')
+
+@app.route('/historicaldata')
+def historicaldata():
+    return render_template('historicaldata.html')
+
+@app.route('/growthPred')
+def growthPred():
+    return render_template('growthPred.html')
 
 # Function to get the data real time in the arduino serial monitor
 @app.route('/data')
@@ -81,10 +89,10 @@ def data():
         return str(e) 
     
 # Function to display the predicted growth days
-@app.route('/', methods=['GET', 'POST'])
+@app.route('/growthPred', methods=['GET', 'POST'])
 def predict_datapoint():
     if request.method == 'GET':
-        return render_template('index.html', predictionDisplay="The predicted value will be displayed here.")
+        return render_template('growthPred.html', predictionDisplay="The predicted value will be displayed here.")
     else:
         try:
             csv_file_path = os.path.join(DATA_DIRECTORY, CSV_FILENAME)

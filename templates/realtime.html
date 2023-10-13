@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/hammerjs@2.0.8"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito+Sans:opsz@6..12&family=Oswald:wght@300;700&display=swap" rel="stylesheet">
+    <title>Real Time Monitoring System</title>
+    <link rel="stylesheet" href="realtime.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <ul class="nav-links">
+                <li><a href="/" class="active">Dashboard</a></li>
+                <li><a href="/historicaldata">Historical Data</a></li>
+                <li><a href="/growthPred">Growth Prediction</a></li>
+                <li><a href="#">About/Help</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+    <main>
+        <h1>Real Time Sensor Data</h1>
+        <div class="content-container">
+            <div class="dataContainer">
+                <div class="datetime">
+                    <div class="time"></div>
+                    <div class="date"></div>
+                </div>
+                <div class="sensor-box">
+                    <h3>Temperature (°C)</h3>
+                    <div class="temp-value">0</div>
+                </div>
+                <div class="sensor-box">
+                    <h3>Humidity (%)</h3>
+                    <div class="hum-value">0</div>
+                </div>
+                <div class="sensor-box">
+                    <h3>TDS Value (ppm)s</h3>
+                    <div class="tds-value">0</div>
+                </div>
+                <div class="sensor-box">
+                    <h3>pH Value</h3>
+                    <div class="ph-value">0</div>
+                </div>
+            </div>
+        </div>
+        <div class="realTime-chart-container">
+            <h2>Real Time Sensor Data Visualizaton</h2>
+            <div class="realTime-chart">
+                <canvas id="realtime-temp-hum-chart"></canvas>
+                <canvas id="realtime-tds-chart"></canvas>
+                <canvas id="realtime-ph-chart"></canvas>
+            </div>
+        </div>
+    </main>
+    <script src="realtime.js"></script>
+</body>
+</html>
