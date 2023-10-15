@@ -1,4 +1,4 @@
-//service-worker.js
+// This script is used to fetch the sensor data in the background
 
 self.addEventListener('install', event => {
     self.skipWaiting(); // Force the waiting service worker to become the active service worker
