@@ -1,12 +1,14 @@
 import sqlite3
+import os
 
 DATA_DIRECTORY = "Database"
 DATABASE_NAME = "sensor_data.db"
 
+DATABASE_PATH = os.path.join(DATA_DIRECTORY, DATABASE_NAME)
 
 # Establish a connection to the SQLite Database
 def connect_to_database():
-    conn = sqlite3.connect(DATABASE_NAME)
+    conn = sqlite3.connect(DATABASE_PATH)
     return conn
 
 # Create sensor data table if not exist

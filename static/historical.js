@@ -1,7 +1,43 @@
+let chartMode = 'date';
+
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+    .then(function(registration) {
+        console.log('Service Worker registered with scope:', registration.scope);
+    })
+    .catch(function(error) {
+        console.log('Service Worker registration failed:', error);
+    });
+        // Listen for messages from the Service Worker
+        navigator.serviceWorker.addEventListener('message', function(event) {
+        let storedData = JSON.parse(localStorage.getItem('sensorData')) || {};
+        if (event.data.type === 'DATA_UPDATED') {
+            const fetchedData = event.data.payload;
+            console.log('Fetched Data: ', fetchedData);
+
+            // Merge fetched data with stored data
+            for (let key in fetchedData) {
+                if (Array.isArray(fetchedData[key])) {
+                    if (storedData[key]) {
+                        storedData[key] = storedData[key].concat(fetchedData[key]);
+                    } else {
+                        storedData[key] = fetchedData[key];
+                    }
+                }
+        }
+
+        // Update local storage
+        localStorage.setItem('sensorData', JSON.stringify(storedData));
+        console.log('Updated local storage', storedData);
+        }
+    });
+}
+  
+
 // Function to when transferButton is clicked
 function tranferData() {
     document.getElementById("transferButton").addEventListener("click", function() {
-        fetch("/transfer", {
+        fetch("/transfer/db", {
             method: "POST",
         })
         .then(response => {
@@ -14,6 +50,7 @@ function tranferData() {
             }
         })
         .then(data => {
+            console.log(data);
             if (data.status === "success")  {
                 alert("Data transfer successful");
                 sensor();
@@ -220,8 +257,6 @@ function populateData(records) {
     return { temps, hums, tds, ph, times };
 }
 
-let chartMode = 'date';
-
 // Function to update the charts sensor data for 5 mins sensor 
 function updateCharts(data, tempHumChart, tdsChart, phChart) {
     const dateSet = new Set();
@@ -291,7 +326,7 @@ function setChartMode(mode) {
 
 // Function to retrieve the sensor data in the API and update the chart.
 function sensor() {
-    fetch('http://127.0.0.1:5000/api/data')
+    fetch('/api/data')
     .then(response => response.json())
     .then(data => {
         updateCharts(data, tempHumChart, tdsChart, phChart);
@@ -302,7 +337,7 @@ function sensor() {
 // Main function
 function main(){
     document.getElementById("daily-button").addEventListener('click', function() {
-        fetch('http://127.0.0.1:5000/api/data')
+        fetch('/api/data')
         .then(response => response.json())
         .then(data => {
             updateCharts(data, tempHumChart, tdsChart, phChart, 'date');

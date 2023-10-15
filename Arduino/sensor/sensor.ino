@@ -22,19 +22,15 @@ float dhtTemp = 0;
 const float calibration_value = 21.34 - 0.1;
 
 // Create a SoftwareSerial object to communicate with Python
-SoftwareSerial pythonSerial(0, 1); // RX, TX
+SoftwareSerial pythonSerial(0, 1); 
 
 void createSensorFile() {
-  if (SD.exists("sensor.csv")) {
-    // Serial.println(F("sensor.csv exists."));
-  } else {
-    // Serial.println(F("Creating sensor.csv..."));
-    File myFile = SD.open("sensor.csv", FILE_WRITE);
-    if (myFile) {
-      //myFile.println(F("Date,Temperature,Humidity,TDS Value,pH Level"));
-      myFile.close();
-      // Serial.println(F("sensor.csv created."));
-    }
+  // Serial.println(F("Creating sensor.csv..."));
+  File myFile = SD.open("sensor.csv", FILE_WRITE);
+  if (myFile) {
+    //myFile.println(F("Date,Temperature,Humidity,TDS Value,pH Level"));
+    myFile.close();
+    // Serial.println(F("sensor.csv created."));
   }
 }
 
@@ -67,7 +63,7 @@ void loop() {
   if (current_time - last_time >= 10000) {
     last_time = current_time;
     getSensorValues();
-  }
+  } 
 
   // Check for commands from Python
   if (pythonSerial.available() > 0) {
@@ -75,13 +71,16 @@ void loop() {
     command.trim();
     if (command == "SEND_FILE") {
       sendFileContents();
-    }
+      SD.remove("sensor.csv");
+      createSensorFile();
+    }  
   }
 }
   
 void getSensorValues() {
   char dateStr[32];
   char timeStr[32];
+//  static int dataID = 0;
   DateTime now = rtc.now();
   sprintf(dateStr, "%02d/%02d/%04d", now.month(), now.day(), now.year());
   sprintf(timeStr, "%02d:%02d", now.hour(), now.minute());
@@ -137,37 +136,27 @@ void getSensorValues() {
     dataFile.print(',');
     dataFile.println(ph_act);
     dataFile.close();
+  
+    // Send data to Python:
+    Serial.print("RT,");
+    Serial.print(timeStr);
+    Serial.print(",");
     Serial.print(dateStr);
-    Serial.print(',');
-//    Serial.print(timeStr);
-//    Serial.print(',');
+    Serial.print(",");
     Serial.print(dhtTemp);
-    Serial.print(',');
+    Serial.print(",");
     Serial.print(hum);
-    Serial.print(',');
+    Serial.print(",");
     Serial.print(tdsValue);
-    Serial.print(',');
+    Serial.print(",");
     Serial.println(ph_act);
-    } else {
-      Serial.println(F("Error opening sensor.csv"));
-    }
-
-    // Send sensor data to Python
-    pythonSerial.print(dateStr);
-    pythonSerial.print(",");
-    pythonSerial.print(dhtTemp);
-    pythonSerial.print(",");
-    pythonSerial.print(hum);
-    pythonSerial.print(",");
-    pythonSerial.print(tdsValue);
-    pythonSerial.print(",");
-    pythonSerial.println(ph_act);
+  }
 }
 
 void sendFileContents() {
     File myFile = SD.open("sensor.csv");
     if (myFile) {
-        Serial.println("SEND_FILE");
+        //Serial.println("SEND_FILE");
         while (myFile.available()) {
             Serial.write(myFile.read());
         }

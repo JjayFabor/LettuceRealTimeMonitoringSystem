@@ -5,6 +5,12 @@ from MLAlgo.src.exception import CustomException
 from MLAlgo.src.utils import load_object
 from MLAlgo.src.components.data_engineering import DataEngineering
 import os
+import sqlite3
+import csv
+
+DATA_DIRECTORY = "Database"
+DATABASE_FILENAME = "sensor_data.db"
+DATABASE_PATH = os.path.join(DATA_DIRECTORY, DATABASE_FILENAME)
 
 class PredictPipeline:
     def __init__(self):
@@ -45,13 +51,29 @@ class PredictPipeline:
 
 class CustomData:
     def __init__(self, csv_file_path: str):
-        self.csv_file_path = csv_file_path
+        self.csv_file_path = os.path.join(DATA_DIRECTORY, csv_file_path)
         # self.csv_df = pd.read_csv(os.path.join('artifacts', 'cleaned_df.csv'))
-
-    def get_data_as_dataframe(self):
+        
+    def export_to_csv(self):
         try:
-            # Read the CSV file into a DataFrame
-            df = pd.read_csv(self.csv_file_path)
-            return df
+            conn = sqlite3.connect(DATABASE_PATH)
+            cursor = conn.cursor()
+
+            cursor.execute('SELECT * FROM sensor_data')
+
+            data = cursor.fetchall()
+
+            with open(self.csv_file_path, 'w', newline='') as file:
+                csv_writer = csv.writer(file)
+
+                custom_header = ['Time', 'Date', 'Temperature', 'Humidity', 'TDS Value', 'pH Level']
+                csv_writer.writerow(custom_header)
+
+                csv_writer.writerows(data)
+
+            conn.close()
+            
+            print(f'Data has been exported to {self.csv_file_path}')
+            return self.csv_file_path
         except Exception as e:
             raise CustomException(e, sys)

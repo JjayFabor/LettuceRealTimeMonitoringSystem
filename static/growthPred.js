@@ -1,3 +1,36 @@
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+    .then(function(registration) {
+        console.log('Service Worker registered with scope:', registration.scope);
+    })
+    .catch(function(error) {
+        console.log('Service Worker registration failed:', error);
+    });
+        // Listen for messages from the Service Worker
+        navigator.serviceWorker.addEventListener('message', function(event) {
+        let storedData = JSON.parse(localStorage.getItem('sensorData')) || {};
+        if (event.data.type === 'DATA_UPDATED') {
+            const fetchedData = event.data.payload;
+            console.log('Fetched Data: ', fetchedData);
+
+            // Merge fetched data with stored data
+            for (let key in fetchedData) {
+                if (Array.isArray(fetchedData[key])) {
+                    if (storedData[key]) {
+                        storedData[key] = storedData[key].concat(fetchedData[key]);
+                    } else {
+                        storedData[key] = fetchedData[key];
+                    }
+                }
+        }
+
+        // Update local storage
+        localStorage.setItem('sensorData', JSON.stringify(storedData));
+        console.log('Updated local storage', storedData);
+        }
+    });
+}
+
 // Function to call or get the prediction of the lettuce growth day and display
 function fetchPredictions() {
     // Fetch predictions by making a POST request to the server
@@ -29,3 +62,4 @@ function fetchPredictions() {
         console.error('Error fetching predictions:', error);
     });
 }
+

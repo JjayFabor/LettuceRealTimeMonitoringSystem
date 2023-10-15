@@ -16,9 +16,9 @@
     <nav class="navbar">
         <div class="container">
             <ul class="nav-links">
-                <li><a href="/" class="active">Dashboard</a></li>
-                <li><a href="/historicaldata">Historical Data</a></li>
-                <li><a href="/growthPred">Growth Prediction</a></li>
+                <li><a href="/"  class=" internal-link active">Dashboard</a></li>
+                <li><a href="/historicaldata" class="internal-link">Historical Data</a></li>
+                <li><a href="/growthPred" class="internal-link">Growth Prediction</a></li>
                 <li><a href="#">About/Help</a></li>
                 <li><a href="#">Contact</a></li>
             </ul>
@@ -59,6 +59,7 @@
             </div>
         </div>
     </main>
-    <script src="realtime.js"></script>
+    <script type="module" src="realtime.js"></script>
+    <script src="service-worker.js"></script>
 </body>
 </html>
