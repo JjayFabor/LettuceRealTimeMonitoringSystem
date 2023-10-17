@@ -13,8 +13,8 @@ RTC_DS3231 rtc;
 File dataFile;
 
 const int chipSelect = 10;
-const int DHT11_PIN = A0;
-const int TDS_PIN = A1;
+const int DHT11_PIN = A1;
+const int TDS_PIN = A0;
 const int PH_SENSOR_PIN = A2;
 
 float dhtTemp = 0;

@@ -142,9 +142,9 @@ function initCharts() {
                         mode: 'x',
                     },
                 },
+                noData,
             },
             responsive: true, 
-            plugins: [noData],
         },
     });
      
