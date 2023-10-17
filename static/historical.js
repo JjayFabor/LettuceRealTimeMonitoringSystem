@@ -72,25 +72,25 @@ function initCharts() {
     const ctph = document.getElementById('ph-chart').getContext('2d');
 
     const noData = {
-        id: 'noData',
-        beforeDraw: ((chart, args, plugins) => {
-            const { ctx, data, chartArea: {top, bottom, left, right, width, height} } = chart;
-            
-            ctx.save();
+        beforeDraw: function (chart) {
+            console.log('No data');
+            if (chart.data.datasets.length === 0 || chart.data.datasets.every(dataset => dataset.data.length === 0)) {
+                const ctx = chart.ctx;
+                const chartArea = chart.chartArea;
     
-            if (data.datasets[0].data.length === 0) {
+                ctx.save();
                 ctx.fillStyle = 'rgba(102, 102, 102, 0.5)';
-                ctx.fillRect(left, top, width, height);
-        
+                ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
                 ctx.restore();
-
+    
                 ctx.font = 'bold 20px sans-serif';
                 ctx.fillStyle = 'black';
                 ctx.textAlign = 'center';
-                ctx.fillText('No Data Available', left + (width / 2), top + (height / 2));
+                ctx.fillText('No Data Available', chartArea.left + (chartArea.right - chartArea.left) / 2, chartArea.top + (chartArea.bottom - chartArea.top) / 2);
             }
-        })
-    };          
+        }
+    };
+    
 
     const tempHumChart = new Chart(ctth, {
         type: 'line',
@@ -142,9 +142,9 @@ function initCharts() {
                         mode: 'x',
                     },
                 },
-                noData,
             },
             responsive: true, 
+            plugins: [noData],
         },
     });
      
@@ -334,6 +334,53 @@ function sensor() {
     .catch(error => console.log(error));
 }
 
+let chart1Obj, chart2Obj, chart3Obj; 
+
+function switchChart(clickedChart) {
+    console.log("Switch chart function called.");
+    console.log("Clicked chart ID:", clickedChart.id);
+
+    const chart1Div = document.getElementById('chart1');
+    const chart2Div = document.getElementById('chart2');
+    const chart3Div = document.getElementById('chart3');
+    
+    if (clickedChart.id === 'chart2') {
+        chart2Div.appendChild(chart1Obj.ctx.canvas);
+        chart1Div.appendChild(chart2Obj.ctx.canvas);
+        chart1Obj.ctx.canvas.style.width = '100%';
+        chart1Obj.ctx.canvas.style.height = '100%';
+
+        chart2Obj.ctx.canvas.style.width = '100%';
+        chart2Obj.ctx.canvas.style.height = '100%';
+
+        chart2Obj.options.maintainAspectRatio = true;
+
+        const tempChart = chart1Obj;
+        chart1Obj = chart2Obj;
+        chart2Obj = tempChart;
+    } else if (clickedChart.id === 'chart3') {
+        chart3Div.appendChild(chart1Obj.ctx.canvas);
+        chart1Div.appendChild(chart3Obj.ctx.canvas);
+        chart1Obj.ctx.canvas.style.width = '100%';
+        chart1Obj.ctx.canvas.style.height = '100%';
+        chart3Obj.ctx.canvas.style.width = '100%';
+        chart3Obj.ctx.canvas.style.height = '100%';
+        const tempChart = chart1Obj;
+        chart1Obj = chart3Obj;
+        chart3Obj = tempChart;
+    }
+
+    chart1Obj.ctx.canvas.id = 'chart1';
+    chart2Obj.ctx.canvas.id = 'chart2';
+    chart3Obj.ctx.canvas.id = 'chart3';
+
+    chart1Obj.resize();
+    chart2Obj.resize();
+    chart3Obj.resize(); 
+}
+
+
+
 // Main function
 function main(){
     document.getElementById("daily-button").addEventListener('click', function() {
@@ -347,7 +394,7 @@ function main(){
     });
 
     document.getElementById("mins-button").addEventListener('click', function() {
-        fetch('http://127.0.0.1:5000/api/data')
+        fetch('/api/data')
         .then(response => response.json())
         .then(data => {
             console.log(data);
@@ -359,14 +406,18 @@ function main(){
     
     
     document.addEventListener("DOMContentLoaded", function() {
-        sensor();
-    
-        tranferData();
-        
         const { tempHumChart: initialTempHumChart, tdsChart: initialTdsChart, phChart: initialPhChart } = initCharts();
         tempHumChart = initialTempHumChart;
         tdsChart = initialTdsChart;
         phChart = initialPhChart;
+
+        chart1Obj = initialTempHumChart;
+        chart2Obj = initialTdsChart;
+        chart3Obj = initialPhChart;
+
+        sensor();
+    
+        tranferData();
         
     });
 } 

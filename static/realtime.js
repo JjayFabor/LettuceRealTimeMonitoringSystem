@@ -1,5 +1,8 @@
 const charts = {};
-let isUpdating = false;
+let chart1Obj, chart2Obj, chart3Obj; 
+let isInternalNavigation = false;
+let isInitialized = false;
+
 
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js')
@@ -87,7 +90,8 @@ function initRealTimeCharts() {
                 }
             ]
         },
-        plugins: [noData]
+        
+        plugins: [noData],
     });
 
     const realTimetdsChart = new Chart(crds, {
@@ -105,7 +109,7 @@ function initRealTimeCharts() {
                 },
             ]
         },
-        plugins: [noData]
+        plugins: [noData],
     });
 
     const realTimephChart = new Chart(crph, {
@@ -121,13 +125,79 @@ function initRealTimeCharts() {
                 tension: 0.5,
             }]
         },
-        plugins: [noData]
+        plugins: [noData],
     });
 
     charts.realTimetempHumChart = realTimetempHumChart;
     charts.realTimetdsChart = realTimetdsChart;
     charts.realTimephChart = realTimephChart;
+
+    // Initialize chart objects
+    chart1Obj = realTimetempHumChart;
+    chart2Obj = realTimetdsChart;
+    chart3Obj = realTimephChart;
 }
+
+function switchRealTimeChart(clickedChart) {
+    console.log("Switch chart function called.");
+    console.log("Clicked chart ID:", clickedChart.id);
+
+    const chart1Div = document.getElementById('chart1');
+    const chart2Div = document.getElementById('chart2');
+    const chart3Div = document.getElementById('chart3');
+    
+    if (clickedChart.id === 'chart2') {
+        chart2Div.appendChild(chart1Obj.ctx.canvas);
+        chart1Div.appendChild(chart2Obj.ctx.canvas);
+        chart1Obj.ctx.canvas.style.width = '100%';
+        chart1Obj.ctx.canvas.style.height = '100%';
+
+        chart2Obj.ctx.canvas.style.width = '100%';
+        chart2Obj.ctx.canvas.style.height = '100%';
+
+        chart2Obj.options.maintainAspectRatio = true;
+
+        const tempChart = chart1Obj;
+        chart1Obj = chart2Obj;
+        chart2Obj = tempChart;
+    } else if (clickedChart.id === 'chart3') {
+        chart3Div.appendChild(chart1Obj.ctx.canvas);
+        chart1Div.appendChild(chart3Obj.ctx.canvas);
+        chart1Obj.ctx.canvas.style.width = '100%';
+        chart1Obj.ctx.canvas.style.height = '100%';
+        chart3Obj.ctx.canvas.style.width = '100%';
+        chart3Obj.ctx.canvas.style.height = '100%';
+        const tempChart = chart1Obj;
+        chart1Obj = chart3Obj;
+        chart3Obj = tempChart;
+    }
+
+    chart1Obj.ctx.canvas.id = 'chart1';
+    chart2Obj.ctx.canvas.id = 'chart2';
+    chart3Obj.ctx.canvas.id = 'chart3';
+
+    chart1Obj.resize();
+    chart2Obj.resize();
+    chart3Obj.resize(); 
+}
+
+// Add an event listener to divChart1 to call switchRealTimeChart when clicked
+let divChart1 = document.getElementById('chart1');
+divChart1.addEventListener('click', function () {
+    switchRealTimeChart(this);
+});
+
+// Add an event listener to divChart1 to call switchRealTimeChart when clicked
+let divChart2 = document.getElementById('chart2');
+divChart2.addEventListener('click', function () {
+    switchRealTimeChart(this);
+});
+
+// Add an event listener to divChart1 to call switchRealTimeChart when clicked
+let divChart3 = document.getElementById('chart3');
+divChart3.addEventListener('click', function () {
+    switchRealTimeChart(this);
+});
 
 function updateRealTimeData(data, skipChartUpdate = false) {
     if(data.temp && data.humidity && data.tds && data.ph && data.timestamps) {
@@ -250,9 +320,6 @@ setInterval(() => {
     timeElement.textContent = formatTime(now);
     dateElement.textContent = formatDate(now)
 }, 200);
-
-let isInternalNavigation = false;
-let isInitialized = false;
 
 document.addEventListener("DOMContentLoaded", function() {
     if (!isInitialized) {

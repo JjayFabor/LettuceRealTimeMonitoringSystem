@@ -26,12 +26,20 @@
     <main>
         <div class="prevDay-chart-container">
             <h2>Previous Sensor Data Visualization</h2>
-            <div class="prevDay-chart">
-                <canvas id="temp-hum-chart"></canvas>
-                <canvas id="tds-chart"></canvas>
-                <canvas id="ph-chart"></canvas>
-            </div>
         </div>
+            <div class="chart-container">
+                <div id="chart1" onclick="switchChart(this)">
+                    <canvas id="temp-hum-chart" class="chart-canvas1"></canvas>
+                </div>
+                <div class="sub-container">
+                    <div id="chart2" class="sub-chart" onclick="switchChart(this)">
+                        <canvas id="tds-chart" class="chart-canvas2"></canvas>
+                    </div>
+                    <div id="chart3" class="sub-chart" onclick="switchChart(this)">
+                        <canvas id="ph-chart" class="chart-canvas3"></canvas>
+                    </div>
+                </div>
+            </div>
         <div class="buttons">
             <button type="button" id="mins-button">5 mins</button>
             <label for="selected-date">Select a Date:</label>

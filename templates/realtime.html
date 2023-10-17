@@ -11,12 +11,14 @@
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito+Sans:opsz@6..12&family=Oswald:wght@300;700&display=swap" rel="stylesheet">
     <title>Real Time Monitoring System</title>
     <link rel="stylesheet" href="realtime.css">
+    <script type="module" src="realtime.js"></script>
+    <script src="service-worker.js"></script>
 </head>
 <body>
     <nav class="navbar">
         <div class="container">
             <ul class="nav-links">
-                <li><a href="/"  class=" internal-link active">Dashboard</a></li>
+                <li><a href="/" class=" internal-link active">Dashboard</a></li>
                 <li><a href="/historicaldata" class="internal-link">Historical Data</a></li>
                 <li><a href="/growthPred" class="internal-link">Growth Prediction</a></li>
                 <li><a href="#">About/Help</a></li>
@@ -52,14 +54,20 @@
         </div>
         <div class="realTime-chart-container">
             <h2>Real Time Sensor Data Visualizaton</h2>
-            <div class="realTime-chart">
-                <canvas id="realtime-temp-hum-chart"></canvas>
-                <canvas id="realtime-tds-chart"></canvas>
-                <canvas id="realtime-ph-chart"></canvas>
+            <div class="chart-container">
+                <div id="chart1">
+                    <canvas id="realtime-temp-hum-chart" class="chart-canvas1"></canvas>
+                </div>
+                <div class="sub-container">
+                    <div id="chart2" class="sub-chart">
+                        <canvas id="realtime-tds-chart" class="chart-canvas2"></canvas>
+                    </div>
+                    <div id="chart3" class="sub-chart">
+                        <canvas id="realtime-ph-chart" class="chart-canvas3"></canvas>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
-    <script type="module" src="realtime.js"></script>
-    <script src="service-worker.js"></script>
 </body>
 </html>
