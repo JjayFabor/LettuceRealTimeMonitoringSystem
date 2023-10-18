@@ -17,6 +17,12 @@ html {
     text-align: center; 
 }
 
+main {
+    margin-left: auto;
+    margin-right: auto;
+    width: 90%;
+}
+
 .navbar:hover {
     background-color: #444; 
 }
@@ -67,13 +73,21 @@ button {
     border-radius: 5px;
     margin-left: auto;
     margin-right: auto;
+    display: block;
 }
 
+.buttons {
+    display: block;
+    align-items: center;
+    position: relative;
+    justify-content: center;
+  }
+
 .progress-container {
-    width: 80%; /* Adjust the width as needed */
     margin: 20px auto;
     background-color: #ccc;
     border-radius: 5px;
+    max-width: 900px;
 }
 .progress-bar {
     height: 30px;
