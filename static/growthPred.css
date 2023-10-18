@@ -5,6 +5,10 @@ body, ul {
     font-family: 'Nunito Sans', sans-serif;
 }
 
+* {
+    scroll-behavior: smooth;
+}
+
 html {
     background-color: white;
 }
@@ -15,12 +19,14 @@ html {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
     transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
     text-align: center; 
+    font-size: 30px;
 }
 
 main {
     margin-left: auto;
     margin-right: auto;
     width: 90%;
+    font-size: 30px;
 }
 
 .navbar:hover {
@@ -44,6 +50,7 @@ main {
 }
   
 .nav-links li {
+    margin-left: 20px;
     margin-right: 20px;
 }
   
@@ -63,10 +70,10 @@ h1, h2 {
 }
 
 button {
-    height: 40px; 
-    font-size: 16px; 
+    height: 60px; 
+    font-size: 24px; 
     padding: 10px 20px; 
-    background-color: #007bff; 
+    background-color: #009578; 
     color: #fff; 
     border: none; 
     cursor: pointer; 
@@ -81,28 +88,4 @@ button {
     align-items: center;
     position: relative;
     justify-content: center;
-  }
-
-.progress-container {
-    margin: 20px auto;
-    background-color: #ccc;
-    border-radius: 5px;
-    max-width: 900px;
-}
-.progress-bar {
-    height: 30px;
-    background-color: #4CAF50; /* Green color for filled portion */
-    border-radius: 5px;
-    text-align: center;
-    line-height: 30px;
-    color: white;
-}
-
-.plot-container {
-    width: 800px;
-    height: 400px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
 }

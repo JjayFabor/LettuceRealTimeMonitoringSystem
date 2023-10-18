@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-zoom"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito+Sans:opsz@6..12&family=Oswald:wght@300;700&display=swap" rel="stylesheet">
     <title>Historical Data</title>
-    <link rel="stylesheet" href="historical.css">
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <nav class="navbar">
@@ -18,14 +18,12 @@
                 <li><a href="/" class="internal-link">Real Time Monitoring</a></li>
                 <li><a href="/historicaldata" class="internal-link active">Historical Data</a></li>
                 <li><a href="/growthPred" class="internal-link">Growth Prediction</a></li>
-                <li><a href="#">About/Help</a></li>
-                <li><a href="#">Contact</a></li>
             </ul>
         </div>
     </nav>
     <main>
         <div class="prevDay-chart-container">
-            <h2>Previous Sensor Data Visualization</h2>
+            <h1>Previous Sensor Data Visualization</h1>
             <div class="chart-container">
                 <div id="chart1" onclick="switchChart(this)">
                     <canvas id="temp-hum-chart" class="chart-canvas1"></canvas>
@@ -42,12 +40,12 @@
         </div>
         <div class="buttons">
             <button type="button" id="mins-button">5 mins</button>
-            <label for="selected-date">Select a Date:</label>
+            <h3>Select a Date</h3>
             <select id="selected-date" name="selected-date"></select>
             <button type="button" id="daily-button">Daily</button>
-            <button type="button" id="transferButton">Transfer Data</button>
         </div>
-
+        <br>
+        <button type="button" id="transferButton">Transfer Data</button>
     </main>
     <script src="historical.js"></script>
     <script src="service-worker.js"></script>

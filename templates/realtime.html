@@ -10,7 +10,7 @@
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito+Sans:opsz@6..12&family=Oswald:wght@300;700&display=swap" rel="stylesheet">
     <title>Real Time Monitoring System</title>
-    <link rel="stylesheet" href="realtime.css">
+    <link rel="stylesheet" href="style.css">
     <script type="module" src="realtime.js"></script>
     <script src="service-worker.js"></script>
 </head>
@@ -18,11 +18,9 @@
     <nav class="navbar">
         <div class="container">
             <ul class="nav-links">
-                <li><a href="/" class=" internal-link active">Dashboard</a></li>
+                <li><a href="/" class=" internal-link active">Real Time Monitoring</a></li>
                 <li><a href="/historicaldata" class="internal-link">Historical Data</a></li>
                 <li><a href="/growthPred" class="internal-link">Growth Prediction</a></li>
-                <li><a href="#">About/Help</a></li>
-                <li><a href="#">Contact</a></li>
             </ul>
         </div>
     </nav>
@@ -53,7 +51,7 @@
             </div>
         </div>
         <div class="realTime-chart-container">
-            <h2>Real Time Sensor Data Visualizaton</h2>
+            <h1>Real Time Sensor Data Visualizaton</h1>
             <div class="chart-container">
                 <div id="chart1">
                     <canvas id="realtime-temp-hum-chart" class="chart-canvas1"></canvas>
