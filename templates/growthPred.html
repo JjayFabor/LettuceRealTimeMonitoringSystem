@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito+Sans:opsz@6..12&family=Oswald:wght@300;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.plot.ly/plotly-2.26.0.min.js" charset="utf-8"></script>
     <title>Lettuce Growth Prediction</title>
     <link rel="stylesheet" href="growthPred.css">
 </head>
@@ -22,13 +23,17 @@
     <main>
         <div>
             <h1>Lettuce Growth Days Prediction</h1>
-            <button type="button" id="fetchPredictionsButton" onclick="fetchPredictions()">Get Predictions</button>
+            <div class="buttons">
+                <button type="button" id="fetchPredictionsButton" onclick="fetchPredictions()">Get Predictions</button>
+            </div>
             <h1>Predictions</h1>
             <p id="predictionDisplay">{{predictionDisplay}}</p>
         </div>
         <div class="progress-container">
             <div class="progress-bar" id="progress-bar">0%</div>
         </div>
+        <!-- Calendar View -->
+        <div id="calendar-view" class="plot-container"></div>
     </main>
     <script src="growthPred.js"></script>
     <script src="service-worker.js"></script>
