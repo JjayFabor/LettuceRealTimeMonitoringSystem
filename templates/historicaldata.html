@@ -22,8 +22,11 @@
         </div>
     </nav>
     <main>
+        <h1>Previous Sensor Data Visualization</h1>
+        <div class="transferButton-div">
+            <button type="button" id="transferButton">Transfer Data</button>
+        </div>
         <div class="prevDay-chart-container">
-            <h1>Previous Sensor Data Visualization</h1>
             <div class="chart-container">
                 <div id="chart1" onclick="switchChart(this)">
                     <canvas id="temp-hum-chart" class="chart-canvas1"></canvas>
@@ -39,13 +42,12 @@
             </div>
         </div>
         <div class="buttons">
-            <button type="button" id="mins-button">5 mins</button>
-            <h3>Select a Date</h3>
-            <select id="selected-date" name="selected-date"></select>
+            <div class="mins-div">
+                <button type="button" id="mins-button">5 mins</button>
+                <select id="selected-date" name="selected-date"></select>
+            </div>
             <button type="button" id="daily-button">Daily</button>
         </div>
-        <br>
-        <button type="button" id="transferButton">Transfer Data</button>
     </main>
     <script src="historical.js"></script>
     <script src="service-worker.js"></script>

@@ -72,24 +72,24 @@ function initCharts() {
     const ctph = document.getElementById('ph-chart').getContext('2d');
 
     const noData = {
-        beforeDraw: function (chart) {
-            console.log('No data');
-            if (chart.data.datasets.length === 0 || chart.data.datasets.every(dataset => dataset.data.length === 0)) {
-                const ctx = chart.ctx;
-                const chartArea = chart.chartArea;
+        id: 'noData',
+        beforeDraw: ((chart, args, plugins) => {
+            const { ctx, data, chartArea: {top, bottom, left, right, width, height} } = chart;
+            ctx.save();
     
-                ctx.save();
+            if (data.datasets[0].data.length === 0) {
                 ctx.fillStyle = 'rgba(102, 102, 102, 0.5)';
-                ctx.fillRect(chartArea.left, chartArea.top, chartArea.right - chartArea.left, chartArea.bottom - chartArea.top);
+                ctx.fillRect(left, top, width, height);
+        
                 ctx.restore();
-    
+
                 ctx.font = 'bold 20px sans-serif';
                 ctx.fillStyle = 'black';
                 ctx.textAlign = 'center';
-                ctx.fillText('No Data Available', chartArea.left + (chartArea.right - chartArea.left) / 2, chartArea.top + (chartArea.bottom - chartArea.top) / 2);
+                ctx.fillText('No Data Available', left + (width / 2), top + (height / 2));
             }
-        }
-    };
+        })
+    };    
     
 
     const tempHumChart = new Chart(ctth, {
@@ -103,7 +103,6 @@ function initCharts() {
                     fill: false,
                     tension: 0.5,
                     borderColor: '#2691DA',
-                    backgroundColor: 'white',
                 },
                 {
                     label: 'Humidity',
@@ -112,10 +111,10 @@ function initCharts() {
                     tension: 0.5,
                     borderColor: '#F1C72C', 
                     borderWidth: 2,
-                    backgroundColor: 'white',
                 },
             ],
         },
+        plugins: [noData],
         options: {
             onHover: (event, chartElement) => {
                 event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
@@ -142,9 +141,8 @@ function initCharts() {
                         mode: 'x',
                     },
                 },
-                noData,
             },
-            responsive: true, 
+            responsive: true,
         },
     });
      
@@ -164,6 +162,7 @@ function initCharts() {
                 },
             ],
         },
+        plugins: [noData],
         options: {
             onHover: (event, chartElement) => {
                 event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
@@ -187,7 +186,6 @@ function initCharts() {
                         mode: 'x',
                     },
                 },
-                noData,
             },
             responsive: true,
         },
@@ -206,6 +204,7 @@ function initCharts() {
                 tension: 0.5,
             }]
         },
+        plugins: [noData],
         options: {
             onHover: (event, chartElement) => {
                 event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
@@ -229,7 +228,6 @@ function initCharts() {
                         mode: 'x',
                     },
                 },
-                noData,
             },
             responsive: true, 
         },
@@ -336,6 +334,7 @@ function sensor() {
 
 let chart1Obj, chart2Obj, chart3Obj; 
 
+// Function to switch chart to a bigger one
 function switchChart(clickedChart) {
     console.log("Switch chart function called.");
     console.log("Clicked chart ID:", clickedChart.id);
@@ -384,6 +383,9 @@ function switchChart(clickedChart) {
 // Main function
 function main(){
     document.getElementById("daily-button").addEventListener('click', function() {
+        var select = document.getElementById('selected-date');
+        select.style.display = 'none';
+
         fetch('/api/data')
         .then(response => response.json())
         .then(data => {
@@ -394,6 +396,14 @@ function main(){
     });
 
     document.getElementById("mins-button").addEventListener('click', function() {
+        // Toggle the visibility of the select element
+        var select = document.getElementById('selected-date');
+        if (select.style.display === 'none' || select.style.display === '') {
+            select.style.display = 'inline-block';
+        } else {
+            select.style.display = 'none';
+        }
+
         fetch('/api/data')
         .then(response => response.json())
         .then(data => {

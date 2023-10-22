@@ -90,8 +90,33 @@ function initRealTimeCharts() {
                 }
             ]
         },
-        
         plugins: [noData],
+        options: {
+            onHover: (event, chartElement) => {
+                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+            },
+            interaction: {
+                intersect: false,
+            },
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: true,
+                        mode: 'x',
+                    },
+                    zoom: {
+                        pinch: {
+                            enabled: true,
+                        },
+                        wheel: {
+                            enabled: true,
+                        },
+                        mode: 'x',
+                    },
+                },
+            },
+            responsive: true, 
+        },
     });
 
     const realTimetdsChart = new Chart(crds, {
@@ -110,6 +135,32 @@ function initRealTimeCharts() {
             ]
         },
         plugins: [noData],
+        options: {
+            onHover: (event, chartElement) => {
+                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+            },
+            interaction: {
+                intersect: false,
+            },
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: true,
+                        mode: 'x',
+                    },
+                    zoom: {
+                        pinch: {
+                            enabled: true,
+                        },
+                        wheel: {
+                            enabled: true,
+                        },
+                        mode: 'x',
+                    },
+                },
+            },
+            responsive: true, 
+        },
     });
 
     const realTimephChart = new Chart(crph, {
@@ -126,6 +177,32 @@ function initRealTimeCharts() {
             }]
         },
         plugins: [noData],
+        options: {
+            onHover: (event, chartElement) => {
+                event.native.target.style.cursor = chartElement[0] ? 'pointer' : 'default';
+            },
+            interaction: {
+                intersect: false,
+            },
+            plugins: {
+                zoom: {
+                    pan: {
+                        enabled: true,
+                        mode: 'x',
+                    },
+                    zoom: {
+                        pinch: {
+                            enabled: true,
+                        },
+                        wheel: {
+                            enabled: true,
+                        },
+                        mode: 'x',
+                    },
+                },
+            },
+            responsive: true, 
+        },
     });
 
     charts.realTimetempHumChart = realTimetempHumChart;

@@ -38,19 +38,7 @@ main {
   width: 90%;
 }
 
-select {
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 10px;
-  margin-bottom: 10px;
-  height: 50px;
-  width: 200px;
-  font-size: 18px;
-}
-
 button {
-  display: block;
   height: 40px; 
   font-size: 18px;
   font-weight: bold;
@@ -60,20 +48,34 @@ button {
   border: none; 
   cursor: pointer; 
   border-radius: 30px;
+  margin: 10px;
+}
+
+.transferButton-div {
+  display: flex;
   align-items: center;
-  position: relative;
   justify-content: center;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 10px;
-  margin-bottom: 10px;
 }
 
 .buttons {
-  display: block;
-  align-items: center;
-  position: relative;
-  justify-content: center;
+  display: flex;
+}
+
+#selected-date {
+  display: none;
+  height: 40px;
+  width: 200px;
+  font-size: 18px;
+  border-radius: 20px;
+}
+
+a {
+  text-decoration: none;
+  color: white;
+}
+
+a:hover {
+  text-decoration: underline;
 }
 
 .navbar {
@@ -141,7 +143,7 @@ button {
 }
 
 .plot-container {
-  width: 1200px;
+  width: 1600px;
   height: 600px;
   display: flex;
   flex-direction: column;
