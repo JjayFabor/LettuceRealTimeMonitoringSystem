@@ -12,7 +12,7 @@
     <nav class="navbar">
         <div class="container">
             <ul class="nav-links">
-                <li><a href="/">Real Time Monitoring</a></li>
+                <li><a href="/">Dashboard</a></li>
                 <li><a href="/historicaldata">Historical Data</a></li>
                 <li><a href="/growthPred" class="active">Growth Prediction</a></li>
             </ul>
@@ -21,7 +21,8 @@
     <main>
         <div>
             <h2>Lettuce Growth Days Prediction</h2>
-            <br><button type="button" id="fetchPredictionsButton" onclick="fetchPredictions()">Predict</button><br>
+            <br><button type="button" id="fetchPredictionsButton" onclick="fetchPredictions()">Predict</button>
+            <button type="button" id="downloadCSVButton"><a href="/download_csv" download="sensor_data.csv">Download CSV</a></button>
             <h2>Prediction</h2>
             <p id="predictionDisplay">{{predictionDisplay}}</p>
         </div>

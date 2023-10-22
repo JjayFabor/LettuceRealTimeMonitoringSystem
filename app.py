@@ -1,4 +1,4 @@
-from flask import Flask, request, render_template, jsonify
+from flask import Flask, request, render_template, jsonify, send_file
 import pandas as pd
 import serial
 import time
@@ -125,11 +125,20 @@ def predict_datapoint():
             # drop the 'Time' header here
             data_df.drop('Time', axis=1)
 
+            # Call PredictPipeline() to predict the growth days
             predict = PredictPipeline()
             preds = predict.predict_days(data_df)
+
             return jsonify(predictions=preds)
         except Exception as e:
             return jsonify(error=str(e))
+        
+@app.route('/download_csv', methods=['GET'])
+def download_csv():
+    try: 
+        return send_file('Database/sensor_data.csv', as_attachment=True)
+    except Exception as e:
+        return jsonify(error=str(e))
 
 # Function to transfer the sensor data of arduino to database
 @app.route('/transfer/db', methods=['POST'])
