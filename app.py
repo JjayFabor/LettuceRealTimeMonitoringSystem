@@ -240,4 +240,3 @@ def get_sensor_data():
 
 if __name__ == '__main__':
     app.run(debug=True) # host='0.0.0.0', debug=True
-    #webview.start()

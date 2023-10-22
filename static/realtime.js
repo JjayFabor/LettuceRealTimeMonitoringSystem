@@ -99,6 +99,17 @@ function initRealTimeCharts() {
                 intersect: false,
             },
             plugins: {
+                legend: {
+                    labels: {
+                        font: {
+                            size: 18,
+                            weight: 'bold',
+                        },
+                    },
+                },
+                tooltip: {
+                    enabled: true,
+                },
                 zoom: {
                     pan: {
                         enabled: true,
@@ -143,6 +154,17 @@ function initRealTimeCharts() {
                 intersect: false,
             },
             plugins: {
+                legend: {
+                    labels: {
+                        font: {
+                            size: 18,
+                            weight: 'bold',
+                        },
+                    },
+                },
+                tooltip: {
+                    enabled: true,
+                },
                 zoom: {
                     pan: {
                         enabled: true,
@@ -185,6 +207,17 @@ function initRealTimeCharts() {
                 intersect: false,
             },
             plugins: {
+                legend: {
+                    labels: {
+                        font: {
+                            size: 18,
+                            weight: 'bold',
+                        },
+                    },
+                },
+                tooltip: {
+                    enabled: true,
+                },
                 zoom: {
                     pan: {
                         enabled: true,
@@ -264,13 +297,13 @@ divChart1.addEventListener('click', function () {
     switchRealTimeChart(this);
 });
 
-// Add an event listener to divChart1 to call switchRealTimeChart when clicked
+// Add an event listener to divChart2 to call switchRealTimeChart when clicked
 let divChart2 = document.getElementById('chart2');
 divChart2.addEventListener('click', function () {
     switchRealTimeChart(this);
 });
 
-// Add an event listener to divChart1 to call switchRealTimeChart when clicked
+// Add an event listener to divChart3 to call switchRealTimeChart when clicked
 let divChart3 = document.getElementById('chart3');
 divChart3.addEventListener('click', function () {
     switchRealTimeChart(this);

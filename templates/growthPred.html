@@ -21,8 +21,10 @@
     <main>
         <div>
             <h2>Lettuce Growth Days Prediction</h2>
-            <br><button type="button" id="fetchPredictionsButton" onclick="fetchPredictions()">Predict</button>
-            <button type="button" id="downloadCSVButton"><a href="/download_csv" download="sensor_data.csv">Download CSV</a></button>
+            <div class="growth-pred-buttons">
+                <button type="button" id="fetchPredictionsButton" onclick="fetchPredictions()">Predict</button>
+                <button type="button" id="downloadCSVButton"><a href="/download_csv" download="sensor_data.csv">Download CSV</a></button>
+            </div>
             <h2>Prediction</h2>
             <p id="predictionDisplay">{{predictionDisplay}}</p>
         </div>

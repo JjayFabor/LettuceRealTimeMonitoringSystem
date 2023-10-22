@@ -12,11 +12,11 @@ html {
   background-color: white;
 }
 
-#daily-button:hover, #mins-button:hover {
+#daily-button:hover, #mins-button:hover, #transferButton:hover, #fetchPredictionsButton:hover, #downloadCSVButton:hover {
   background-color: #0056b3; 
 }
 
-#daily-button:active, #mins-button:active {
+#daily-button:active, #mins-button:active, #transferButton:active, #fetchPredictionsButton:active, #downloadCSVButton:active {
   background-color: #003e80; 
 }
 
@@ -78,6 +78,11 @@ a:hover {
   text-decoration: underline;
 }
 
+.growth-pred-buttons {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 .navbar {
   background-color: #333;
   color: #fff;
@@ -259,6 +264,46 @@ a:hover {
 .chart-canvas2, .chart-canvas3 {
   width: 100%; /* Make Chart 2 and Chart 3 canvases take the full width of Chart 2 and Chart 3 */
   flex: 1; /* Allow Chart 2 and Chart 3 to share the available vertical space equally */
+}
+
+.popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1;
+}
+
+.popup-content {
+  background-color: #fff;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  padding: 20px;
+  text-align: center;
+}
+
+#ok-button {
+  cursor: pointer;
+}
+
+.error-popup {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 1;
+}
+
+#error-ok-button {
+  cursor: pointer;
 }
 
 @media only screen and (max-width: 1900px) {

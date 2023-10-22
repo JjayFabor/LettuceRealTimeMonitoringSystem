@@ -50,13 +50,33 @@ function tranferData() {
             }
         })
         .then(data => {
-            console.log(data);
             if (data.status === "success")  {
-                alert("Data transfer successful");
+                // Display the pop-up
+                const popup = document.getElementById("popup");
+                popup.style.display = "block";
+
+                // Add an event listener to close the pop-up when the "OK" button is clicked
+                const okButton = document.getElementById("ok-button");
+                okButton.addEventListener("click", () => {
+                    popup.style.display = "none";
+                });
+
                 sensor();
             }      
             else if (data.status === "error") {
-                alert("Error during transfer: " + data.message);
+                // Display the error pop-up
+                const errorPopup = document.getElementById("error-popup");
+                errorPopup.style.display = "block";
+                
+                // Set the error message text
+                const errorMessage = document.getElementById("error-message");
+                errorMessage.textContent = "Error during transfer: " + data.message;
+
+                // Add an event listener to close the error pop-up when the "OK" button is clicked
+                const errorOkButton = document.getElementById("error-ok-button");
+                errorOkButton.addEventListener("click", () => {
+                    errorPopup.style.display = "none";
+                });
             }
         })
         .catch(error => {
@@ -123,6 +143,14 @@ function initCharts() {
                 intersect: false,
             },
             plugins: {
+                legend: {
+                    labels: {
+                        font: {
+                            size: 18,
+                            weight: 'bold',
+                        },
+                    },
+                },
                 tooltip: {
                     enabled: true,
                 },
@@ -171,6 +199,17 @@ function initCharts() {
                 intersect: false,
             },
             plugins: {
+                legend: {
+                    labels: {
+                        font: {
+                            size: 18,
+                            weight: 'bold',
+                        },
+                    },
+                },
+                tooltip: {
+                    enabled: true,
+                },
                 zoom: {
                     pan: {
                         enabled: true,
@@ -213,6 +252,17 @@ function initCharts() {
                 intersect: false,
             },
             plugins: {
+                legend: {
+                    labels: {
+                        font: {
+                            size: 18,
+                            weight: 'bold',
+                        },
+                    },
+                },
+                tooltip: {
+                    enabled: true,
+                },
                 zoom: {
                     pan: {
                         enabled: true,

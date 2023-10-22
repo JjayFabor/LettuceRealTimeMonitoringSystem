@@ -15,7 +15,7 @@
     <nav class="navbar">
         <div class="container">
             <ul class="nav-links">
-                <li><a href="/" class="internal-link">Real Time Monitoring</a></li>
+                <li><a href="/" class="internal-link">Dashboard</a></li>
                 <li><a href="/historicaldata" class="internal-link active">Historical Data</a></li>
                 <li><a href="/growthPred" class="internal-link">Growth Prediction</a></li>
             </ul>
@@ -26,6 +26,18 @@
         <div class="transferButton-div">
             <button type="button" id="transferButton">Transfer Data</button>
         </div>
+        <div id="popup" class="popup">
+            <div class="popup-content">
+                <p>Data transfer successful!</p>
+                <button id="ok-button">OK</button>
+            </div>
+        </div>        
+        <div id="error-popup" class="popup">
+            <div class="popup-content">
+                <p id="error-message">Error during transfer</p>
+                <button id="error-ok-button">OK</button>
+            </div>
+        </div>        
         <div class="prevDay-chart-container">
             <div class="chart-container">
                 <div id="chart1" onclick="switchChart(this)">
