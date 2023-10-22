@@ -2,7 +2,6 @@ from flask import Flask, request, render_template, jsonify, send_file
 import pandas as pd
 import serial
 import time
-import csv
 import time
 from datetime import datetime
 
