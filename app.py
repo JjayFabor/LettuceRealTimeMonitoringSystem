@@ -1,14 +1,10 @@
-from flask import Flask, request, render_template, flash, redirect, session, jsonify, current_app
-import numpy as np
+from flask import Flask, request, render_template, jsonify
 import pandas as pd
-import os
-import sys
 import serial
 import time
 import csv
 import time
 from datetime import datetime
-import shutil
 
 from Database.db_manager import create_table_if_not_exists, connect_to_database
 from MLAlgo.src.pipeline.predict_pipeline import CustomData, PredictPipeline
@@ -235,3 +231,4 @@ def get_sensor_data():
 
 if __name__ == '__main__':
     app.run() # host='0.0.0.0', debug=True
+    #webview.start()

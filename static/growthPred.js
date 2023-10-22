@@ -61,15 +61,7 @@ function fetchPredictions() {
         progressBar.style.width = `${progressPercentage}%`;
         progressBar.innerText = `${progressPercentage.toFixed(2)}%`;
 
-    })
-    .catch(error => {
-        console.error('Error fetching predictions:', error);
-    });
-}
-
-
-document.addEventListener('DOMContentLoaded', function (){
-    let today = new Date();
+        let today = new Date();
     let predictedHarvestDate = new Date(today);
     predictedHarvestDate.setDate(today.getDate() + predictedGrowthDays);
 
@@ -104,4 +96,9 @@ document.addEventListener('DOMContentLoaded', function (){
     // Disable mode bar (zoom and pan buttons)
     const config = { displayModeBar: false};
     Plotly.newPlot('calendar-view', calendarViewData.data, calendarViewData.layout, config);
-})
+
+    })
+    .catch(error => {
+        console.error('Error fetching predictions:', error);
+    });
+}

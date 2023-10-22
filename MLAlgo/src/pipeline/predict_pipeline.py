@@ -1,6 +1,5 @@
 import sys
 import pandas as pd
-import numpy as np
 from MLAlgo.src.exception import CustomException
 from MLAlgo.src.utils import load_object
 from MLAlgo.src.components.data_engineering import DataEngineering
