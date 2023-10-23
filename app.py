@@ -1,19 +1,33 @@
-from flask import Flask, request, render_template, jsonify, send_file
+from flask import Flask, request, render_template, jsonify, send_file, url_for, redirect, session
+from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
 import pandas as pd
 import serial
 import time
-import time
 from datetime import datetime
+import hashlib
 
 from Database.db_manager import create_table_if_not_exists, connect_to_database
 from MLAlgo.src.pipeline.predict_pipeline import CustomData, PredictPipeline
 
-app = Flask(__name__, static_url_path='',
-            static_folder='static',
-            template_folder='templates')
+app = Flask(__name__, static_url_path='',static_folder='static',template_folder='templates')
 
-app.secret_key = 'c2a414bae58f626702e45f483f5cf295b9d006455448b1f78'
+app.config['SECRET_KEY'] = 'c2a414bae58f626702e45f483f5cf295b9d006455448b1f78'
 
+class User(UserMixin):
+    def __init__(self, user_id):
+        self.id = user_id
+
+USERNAME = "group6_admin"
+PASSWORD = hashlib.sha256("group6_admin1234".encode()).hexdigest()
+
+# Initialized Flask-Login
+login_manager = LoginManager()
+login_manager.init_app(app)
+login_manager.login_view = 'login'
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User(user_id)
 
 # Define constants
 sensor_data = {
@@ -43,7 +57,32 @@ except Exception as e:
     print(f"Could not initialize the serial port: {e}")
     arduino = None
 
-@app.route('/')
+@app.route('/', methods=['GET', 'POST'])
+def index():
+    if request.method == 'POST':
+        username = request.form['username']
+        provided_password = request.form['password']
+        hashed_provided_password = hashlib.sha256(provided_password.encode()).hexdigest()
+
+        if username == USERNAME and hashed_provided_password == PASSWORD:
+            user = User(1)
+            login_user(user)
+            return redirect(url_for('dashboard'))
+        else:
+            return "Invalid username or password"
+    return render_template('login.html')
+
+@app.route('/logout', methods=['GET', 'POST'])
+@login_required
+def logout():
+    logout_user()
+
+    session.clear()
+
+    return redirect(url_for('index'))
+
+@app.route('/realtime')
+@login_required
 def dashboard():
     return render_template('realtime.html')
 

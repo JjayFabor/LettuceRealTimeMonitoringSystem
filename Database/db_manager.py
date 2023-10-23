@@ -26,5 +26,16 @@ def create_table_if_not_exists():
         );
     ''')
 
+def create_user_credentials_table():
+    conn = sqlite3.connect(DATABASE_PATH)
+    cursor = conn.cursor()
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS users (
+            id INTEGER PRIMARY KEY,
+            username TEXT NOT NULL,
+            password TEXT NOT NULL
+        );
+    ''')
+
     conn.commit()
     conn.close()
