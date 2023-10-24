@@ -1,5 +1,5 @@
-from flask import Flask, request, render_template, jsonify, send_file, url_for, redirect, session
-from flask_login import LoginManager, UserMixin, login_user, login_required, current_user, logout_user
+from flask import Flask, request, render_template, jsonify, send_file, url_for, redirect, flash, session
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 import pandas as pd
 import serial
 import time
@@ -69,7 +69,7 @@ def index():
             login_user(user)
             return redirect(url_for('dashboard'))
         else:
-            return "Invalid username or password"
+            flash("Invalid username or password", "error")
     return render_template('login.html')
 
 @app.route('/logout', methods=['GET', 'POST'])

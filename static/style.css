@@ -13,8 +13,7 @@ html {
 }
 
 .login-body {
-  font-family: 'Nunito Sans', sans-serif;
-  background-color: #f4f4f4;
+  background-color: #444444;
   margin: 0;
   padding: 0;
   display: flex;
@@ -25,45 +24,52 @@ html {
 
 .login-container {
   text-align: center;
+  display: flex;
+  flex-direction: column; /* Align items vertically */
+  align-items: center;
 }
 
 .login-h1 {
   text-align: center;
-  font-size: 36px;
+  font-size: 95px;
   margin-bottom: 20px;
+  font-weight: bolder;
+  color: #00ffcc;
 }
 form {
-  background-color: #fff;
+  background-color: #00ffcc;
   padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-  width: 300px;
+  border-radius: 10px;
+  box-shadow: 0 7px 17px rgba(255, 255, 255, 0.5);
+  width: 400px;
   margin-right: 5px;
 }
 
 label {
   display: block;
   font-weight: bold;
-  margin-bottom: 5px;
+  font-size: 24px;
+  margin-bottom: 10px;
+  color: #444444;
 }
 
 input[type="text"],
 input[type="password"] {
   width: 100%;
-  padding: 10px 2px;
-  margin-bottom: 15px;
+  padding: 12px 2px;
+  margin-bottom: 20px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 input[type="submit"] {
   background-color: #007bff;
   color: #fff;
-  padding: 10px 20px;
+  padding: 12px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 18px;
 }
 
 input[type="submit"]:hover {
@@ -73,6 +79,33 @@ input[type="submit"]:hover {
 /* Center the form horizontally */
 form {
   margin: 0 auto;
+}
+
+.alert-danger {
+  width: 400px;
+  background-color: #f8d7da;
+  border-color: #f5c6cb;
+  color: red;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
+/* Style the unordered list within the error message */
+#error-message {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+/* Style each individual error message item */
+#error-message li {
+  margin: 5px 0;
+}
+
+/* Style the text within the error message */
+.alert-danger ul li {
+  color: #721c24;
 }
 
 #daily-button:hover, #mins-button:hover, #transferButton:hover, #fetchPredictionsButton:hover, #downloadCSVButton:hover {

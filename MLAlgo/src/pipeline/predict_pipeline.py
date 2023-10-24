@@ -25,7 +25,7 @@ class PredictPipeline:
 
     def preprocess_data(self, features):
         try:
-            preprocess_path = 'artifacts\preprocessor.pkl'
+            preprocess_path = 'artifacts/preprocessor.pkl'
             preprocessor = load_object(file_path=preprocess_path)
             feature_engineering = DataEngineering()
 
