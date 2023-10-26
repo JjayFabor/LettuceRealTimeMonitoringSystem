@@ -252,7 +252,7 @@ a:hover {
 }
 
 .plot-container {
-  width: 1600px;
+  width: 1500px;
   height: 600px;
   display: flex;
   flex-direction: column;

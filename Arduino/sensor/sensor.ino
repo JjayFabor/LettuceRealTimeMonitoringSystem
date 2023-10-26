@@ -169,7 +169,7 @@ void getSensorValues() {
   if (tdsValue >= 200.00){
     digitalWrite(tdsPump1, LOW);
    // digitalWrite(tdsPump2, LOW);
-  } else if (tdsValue < 200.00) {
+  } else if (tdsValue < 500.00) {
     digitalWrite(tdsPump1, HIGH);
    // digitalWrite(tdsPump2, HIGH);
     delay(3000);
