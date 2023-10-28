@@ -33,12 +33,15 @@ if ('serviceWorker' in navigator) {
 
 let predictedGrowthDays; 
 let startDate;
-// Function to call or get the prediction of the lettuce growth day and display
+let date;
+
+// fetch predictions
 function fetchPredictions() {
     // fetch 'date' from the database API
     fetch('/api/data')
     .then(response => response.json())
     .then(data=> {
+        console.log(data);
         // Check for error in the response
         if (data.error) {
             alert(data.error);
@@ -47,11 +50,18 @@ function fetchPredictions() {
 
         const dateRecord = data[0];
         startDate = new Date(dateRecord.Date);
-    })
+        date = startDate.getDate();
+        console.log(dateRecord, startDate);
 
-    // Fetch predictions by making a POST request to the server
+        growthPred(date);
+    })
+}
+
+// Function to call or get the prediction of the lettuce growth day and display
+function growthPred(date){
+    // Fetch predictions
     fetch('/growthPred', {
-        method: 'POST',
+        method: 'POST'
     })
     .then(response => response.json())
     .then(data => {
@@ -76,7 +86,8 @@ function fetchPredictions() {
         progressBar.innerText = `${progressPercentage.toFixed(2)}%`;
 
         let predictedHarvestDate = new Date(startDate);
-        predictedHarvestDate.setDate(startDate.getDate() + predictedGrowthDays);
+        predictedHarvestDate.setDate(date + predictedGrowthDays);
+        console.log(date);
 
         const calendarViewData = {
             data: [
