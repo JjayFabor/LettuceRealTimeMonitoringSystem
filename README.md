@@ -18,4 +18,5 @@ Follow these steps to get the application up and running on your local machine.
    cd LettuceRealTimeMonitoringSystem
    pip install -r requirements.txt
    python app.py
-   Search 127.0.0.1:8000 in your browser
+   
+## Search <ins>127.0.0.1:8000</ins> in your browser
