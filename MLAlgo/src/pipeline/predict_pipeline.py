@@ -15,14 +15,6 @@ class PredictPipeline:
     def __init__(self):
         pass
 
-    def load_csv_to_dataframe(self, csv_file_path):
-        try:
-            # Read the CSV file into a DataFrame
-            df = pd.read_csv(csv_file_path)
-            return df
-        except Exception as e:
-            raise CustomException(e, sys)
-
     def preprocess_data(self, features):
         try:
             preprocess_path = 'artifacts/preprocessor.pkl'
@@ -32,7 +24,9 @@ class PredictPipeline:
             engineered_features = feature_engineering.create_lagged_features(features)
             cleaned_df = feature_engineering.initiate_data_engineering(engineered_features)
             scaled_data = preprocessor.transform(cleaned_df)
+
             return scaled_data
+        
         except Exception as e:
             raise CustomException(e, sys)
 
@@ -51,7 +45,6 @@ class PredictPipeline:
 class CustomData:
     def __init__(self, csv_file_path: str):
         self.csv_file_path = os.path.join(DATA_DIRECTORY, csv_file_path)
-        # self.csv_df = pd.read_csv(os.path.join('artifacts', 'cleaned_df.csv'))
         
     def export_to_csv(self):
         try:

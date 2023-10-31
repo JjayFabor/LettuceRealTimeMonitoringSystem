@@ -2,9 +2,11 @@ from flask import Flask, request, render_template, jsonify, send_file, url_for, 
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 import pandas as pd
 import serial
-import time
 from datetime import datetime
 import hashlib
+import webview
+from threading import Thread
+
 
 from Database.db_manager import create_table_if_not_exists, connect_to_database
 from MLAlgo.src.pipeline.predict_pipeline import CustomData, PredictPipeline

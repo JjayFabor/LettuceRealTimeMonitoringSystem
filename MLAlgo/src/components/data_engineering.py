@@ -1,11 +1,11 @@
 import os
 import sys
-from MLAlgo.src.exception import CustomException
-from MLAlgo.src.logger import logging
 import pandas as pd
 
 from dataclasses import dataclass
 
+from MLAlgo.src.exception import CustomException
+from MLAlgo.src.logger import logging
 
 csv_file_path = os.path.abspath('MLAlgo/notebook/data/lettuce_dataset.csv')
 
@@ -48,9 +48,10 @@ class DataEngineering:
     def initiate_data_engineering(self, df):
         logging.info("Starting data engineering.")
         try:
+            # df = self.create_lagged_features(df)
             cleaned_df = df.dropna()
 
-            cleaned_df.to_csv(self.engineering_config.data_engineered_path, index=False, header=True)
+            # cleaned_df.to_csv(self.engineering_config.data_engineered_path, index=False, header=True)
             logging.info("Create lagging features completed")
             
             return cleaned_df

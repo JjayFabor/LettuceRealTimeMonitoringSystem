@@ -1,7 +1,5 @@
 import os
 import sys
-from MLAlgo.src.exception import CustomException
-from MLAlgo.src.logger import logging
 import pandas as pd
 
 from sklearn.model_selection import train_test_split
@@ -9,11 +7,11 @@ from dataclasses import dataclass
 
 
 from MLAlgo.src.components.data_transformation import DataTransformation, DataTransformationConfig
-
 from MLAlgo.src.components.model_trainer import ModelTrainerConfig, ModelTrainer
+from MLAlgo.src.logger import logging
+from MLAlgo.src.exception import CustomException
 
-
-csv_file_path = os.path.abspath('artifacts\cleaned_df.csv')
+csv_file_path = os.path.abspath('artifacts/cleaned_df.csv')
 lettuce_path = os.path.abspath('MLAlgo/notebook/data/lettuce_dataset.csv')
 
 @dataclass
