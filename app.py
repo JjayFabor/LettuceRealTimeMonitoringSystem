@@ -3,8 +3,7 @@ from flask_login import LoginManager, UserMixin, login_user, login_required, log
 import pandas as pd
 import serial
 from datetime import datetime
-import hashlib
-import webview
+import hashlib 
 from threading import Thread
 
 
