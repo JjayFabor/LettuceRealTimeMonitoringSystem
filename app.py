@@ -1,10 +1,16 @@
 from flask import Flask, request, render_template, jsonify, send_file, url_for, redirect, flash, session
-from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
+# from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 import pandas as pd
 import serial
 from datetime import datetime
-import hashlib 
-from threading import Thread
+import threading
+import os
+
+import customtkinter as ctk
+import webbrowser
+import tkinter.messagebox as tkmb
+import requests
+
 
 
 from Database.db_manager import create_table_if_not_exists, connect_to_database
@@ -14,21 +20,21 @@ app = Flask(__name__, static_url_path='',static_folder='static',template_folder=
 
 app.config['SECRET_KEY'] = 'c2a414bae58f626702e45f483f5cf295b9d006455448b1f78'
 
-class User(UserMixin):
-    def __init__(self, user_id):
-        self.id = user_id
+# class User(UserMixin):
+#     def __init__(self, user_id):
+#         self.id = user_id
 
-USERNAME = "group6_admin"
-PASSWORD = hashlib.sha256("group6_admin1234".encode()).hexdigest()
+# USERNAME = "group6_admin"
+# PASSWORD = hashlib.sha256("group6_admin1234".encode()).hexdigest()
 
 # Initialized Flask-Login
-login_manager = LoginManager()
-login_manager.init_app(app)
-login_manager.login_view = 'login'
+# login_manager = LoginManager()
+# login_manager.init_app(app)
+# login_manager.login_view = 'login'
 
-@login_manager.user_loader
-def load_user(user_id):
-    return User(user_id)
+# @login_manager.user_loader
+# def load_user(user_id):
+#     return User(user_id)
 
 # Define constants
 sensor_data = {
@@ -58,33 +64,33 @@ except Exception as e:
     print(f"Could not initialize the serial port: {e}")
     arduino = None
 
-@app.route('/', methods=['GET', 'POST'])
+# @app.route('/', methods=['GET', 'POST'])
+# def index():
+    # if request.method == 'POST':
+    #     username = request.form['username']
+    #     provided_password = request.form['password']
+    #     hashed_provided_password = hashlib.sha256(provided_password.encode()).hexdigest()
+
+    #     if username == USERNAME and hashed_provided_password == PASSWORD:
+    #         user = User(1)
+    #         login_user(user)
+    #         return redirect(url_for('dashboard'))
+    #     else:
+    #         flash("Invalid username or password", "error")
+    # return render_template('login.html')
+
+# @app.route('/logout', methods=['GET', 'POST'])
+# @login_required
+# def logout():
+    # logout_user()
+
+    # session.clear()
+
+    # return redirect(url_for('index'))
+
+@app.route('/')
+# @login_required
 def index():
-    if request.method == 'POST':
-        username = request.form['username']
-        provided_password = request.form['password']
-        hashed_provided_password = hashlib.sha256(provided_password.encode()).hexdigest()
-
-        if username == USERNAME and hashed_provided_password == PASSWORD:
-            user = User(1)
-            login_user(user)
-            return redirect(url_for('dashboard'))
-        else:
-            flash("Invalid username or password", "error")
-    return render_template('login.html')
-
-@app.route('/logout', methods=['GET', 'POST'])
-@login_required
-def logout():
-    logout_user()
-
-    session.clear()
-
-    return redirect(url_for('index'))
-
-@app.route('/realtime')
-@login_required
-def dashboard():
     return render_template('realtime.html')
 
 @app.route('/historicaldata')
@@ -277,5 +283,121 @@ def get_sensor_data():
     except Exception as e:
         return jsonify({'error': str(e)})
 
-if __name__ == '__main__':
+flask_process = None
+
+# Function to gracefully shutdown the Flask app
+@app.route('/shutdown', methods=['POST'])
+def shutdown():
+    try:
+        print("Shutting down the server...")
+        os.kill(os.getpid(), 9)
+        return 'Server shutting down...'
+    except Exception as e:
+        print(f"Error during shutdown: {str(e)}")
+
+
+# Your Flask process
+def run_flask_app():
     app.run(host='0.0.0.0', port=8000)
+
+# defining the login function
+def login():
+    # pre-defined username
+    username = "admin"
+    # pre-defined password
+    password = "admin1234"
+
+    if user_entry.get() == username and user_pass.get() == password:
+        #run_flask_app()
+        # Start the Flask app in the main thread
+        app_thread = threading.Thread(target=run_flask_app)
+        app_thread.start()
+
+        # Open the browser in a new thread
+        def open_browser():
+            url = "http://localhost:8000"
+            webbrowser.open(url)
+
+        browser_thread = threading.Thread(target=open_browser)
+        browser_thread.start()
+    elif user_entry.get() == username and user_pass.get() != password:
+        tkmb.showwarning(title='Wrong password', message='Please check your password')
+
+    elif user_entry.get() != username and user_pass.get() == password:
+        tkmb.showwarning(title='Wrong username', message='Please check your username')
+
+    else:
+        tkmb.showerror(title="Login Failed", message="Invalid Username and password")
+
+# Function to send a POST request to the /shutdown endpoint
+def shutdown_server():
+    try:
+        response = requests.post("http://localhost:8000/shutdown")
+        if response.status_code == 200:
+            print("Server is shutting down...")
+        else:
+            print("Failed to shut down the server.")
+    except requests.exceptions.ConnectionError:
+        print("Server shut down.")
+
+# Function to handle the window close event
+def on_closing():
+    shutdown_server()
+    root.destroy()
+
+if __name__ == '__main__':
+    root = ctk.CTk()
+
+    # Start the Flask app in a separate thread
+    flask_thread = threading.Thread(target=run_flask_app)
+
+    ctk.set_appearance_mode("dark")
+    ctk.set_default_color_theme("blue")
+
+    # Set the label font with a tuple
+    label = ctk.CTkLabel(root, text="Lettuce Realtime Monitoring System", font=("Nunito Sans", 30, "bold"))
+    label.pack(pady=20)
+
+    # Create a frame
+    frame = ctk.CTkFrame(master=root)
+    frame.pack(pady=20, padx=40, fill='both', expand=True)
+
+    # Set the label inside the frame
+    label = ctk.CTkLabel(master=frame, text='Login Authentication System', font=("Nunito Sans", 20))
+    label.pack(pady=12, padx=10)
+
+    # Create the text box for taking
+    # username input from user
+    user_entry = ctk.CTkEntry(master=frame, placeholder_text="Username")
+    user_entry.pack(pady=12, padx=10)
+
+    # Create a text box for taking
+    # password input from user
+    user_pass = ctk.CTkEntry(master=frame, placeholder_text="Password", show="*")
+    user_pass.pack(pady=12, padx=10)
+
+    # Create a login button to login
+    button = ctk.CTkButton(master=frame, text='Login', command=login)
+    button.pack(pady=12, padx=10)
+
+    # Create the Tkinter GUI
+    root.title("Login")
+
+    # Set the window size to 600x600
+    root.geometry("600x600")
+
+    # Calculate the window position to center it on the screen
+    window_width = 600
+    window_height = 400
+    screen_width = root.winfo_screenwidth()
+    screen_height = root.winfo_screenheight()
+    x = (screen_width // 2) - (window_width // 2)
+    y = (screen_height // 2) - (window_height // 2)
+
+    # Set the window position
+    root.geometry(f"{window_width}x{window_height}+{x}+{y}")
+
+    root.protocol("WM_DELETE_WINDOW", on_closing)
+
+    root.mainloop()
+
