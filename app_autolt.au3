@@ -2,10 +2,7 @@
 #AutoIt3Wrapper_Run_Obfuscator=n
 
 ; Run the batch file without displaying the command prompt
-Run("C:\Users\Jjay\Desktop\ThesisProject\script.bat", "", @SW_HIDE)
-
-; Wait for the script to finish (optional)
-ProcessWaitClose("script.bat")
+Run("C:\Users\Jjay\Desktop\ThesisProject\script_app.bat", @SW_HIDE)
 
 ; Exit the AutoIt script
 Exit

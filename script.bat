@@ -3,7 +3,7 @@ setlocal
 
 :: Define the Python version to install (you can change this as needed)
 set PYTHON_VERSION=3.13.0
-set PYTHON_INSTALLER=python-%PYTHON_VERSION%-amd64.exe
+set PYTHON_INSTALLER=python-%PYTHON_VERSION%a1-amd64.exe
 
 :: Define the name of your requirements.txt file and Flask application script
 set REQUIREMENTS_FILE=requirements.txt
