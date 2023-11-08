@@ -1,11 +1,11 @@
 # Thesis Project 
 # Lettuce Growth Day Prediction Web Application
 
-This web application uses Flask to deploy a Machine Learning (ML) algorithm for predicting lettuce growth days based on input data. Users can upload a CSV file containing relevant data, and the application will provide predictions for each plant's growth days.
+This web application uses Flask to deploy a Machine Learning (ML) algorithm for predicting lettuce growth days.
 
 ## Prerequisites
 
-- Python 3.7 or higher
+- Python 3.10 or higher
 
 ## Getting Started
 

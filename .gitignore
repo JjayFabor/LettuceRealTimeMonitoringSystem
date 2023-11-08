@@ -163,6 +163,6 @@ cython_debug/
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
 
-# .bat files
-github_autolt.au3
-github.bat
+Github Installation/
+Python Installer/
+main.py

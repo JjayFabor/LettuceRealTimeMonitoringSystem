@@ -34,6 +34,7 @@ if ('serviceWorker' in navigator) {
 let predictedGrowthDays; 
 let startDate;
 let date;
+let isInternalNavigation = false;
 
 // fetch predictions
 function fetchPredictions() {
@@ -127,3 +128,17 @@ function growthPred(date){
         console.error('Error fetching predictions:', error);
     });
 }
+
+// Use the 'beforeunload' event to check if the user is leaving the site
+window.addEventListener('beforeunload', function(event) {
+    if (isInternalNavigation) {
+      // Only clear local storage and interval when the user leaving the site
+      localStorage.clear();
+      // Send a message to the service worker to clear the cache
+      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+          navigator.serviceWorker.controller.postMessage('clearCache');
+      }
+    }
+    // Reset the flag for future use
+    isInternalNavigation = true;
+});

@@ -18,20 +18,20 @@ html {
   padding: 0;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   height: 100vh;
 }
 
 .login-container {
   text-align: center;
   display: flex;
-  flex-direction: column; /* Align items vertically */
-  align-items: center;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .login-h1 {
   text-align: center;
-  font-size: 95px;
+  font-size: 120px;
   margin-bottom: 20px;
   font-weight: bolder;
   color: #00ffcc;
@@ -151,6 +151,34 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+#transferButton {
+  padding: 10px 20px;
+  margin: 10px;
+}
+
+.loader {
+  display: none;
+  position: relative;
+  background: linear-gradient(to right, #00ffcc 50%, #444444 50%);
+  border-radius: 100%;
+  height: 70px;
+  width: 70px;
+  animation: loader-circle-time 8s steps(800, start) infinite;
+  margin-left: 10px; 
+}
+
+.loader:after {
+  content: "";
+  border-radius: 100% 0 0 100% / 50% 0 0 50%;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 50%;
+  animation: loader-circle-mask 8s steps(250, start) infinite;
+  transform-origin: 100% 50%;
 }
 
 .buttons {
@@ -408,6 +436,34 @@ a:hover {
 
 #error-ok-button {
   cursor: pointer;
+}
+
+@keyframes loader-circle-time {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loader-circle-mask {
+  0% {
+    background: #444444;
+    transform: rotate(0deg);
+  }
+
+  50% {
+    background: #444444;
+    transform: rotate(-180deg);
+  }
+
+  50.01% {
+    background: #00ffcc;
+    transform: rotate(0deg);
+  }
+
+  100% {
+    background: #00ffcc;
+    transform: rotate(-180deg);
+  }
 }
 
 @media only screen and (max-width: 1900px) {

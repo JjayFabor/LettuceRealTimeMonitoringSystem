@@ -1,4 +1,5 @@
 let chartMode = 'date';
+let isInternalNavigation = false;
 
 if ('serviceWorker' in navigator) {
     navigator.serviceWorker.register('/service-worker.js')
@@ -33,9 +34,9 @@ if ('serviceWorker' in navigator) {
     });
 }
   
-
 // Function to when transferButton is clicked
 function tranferData() {
+    const loadingIndicator = document.getElementById("loadingIndicator");
     document.getElementById("transferButton").addEventListener("click", function() {
         fetch("/transfer/db", {
             method: "POST",
@@ -45,6 +46,8 @@ function tranferData() {
                 return response.json();
             } else {
                 return response.text().then(text => {
+                    // hide loading indicator 
+                    loadingIndicator.style.display = "none";   
                     throw new Error(text);
                 });
             }
@@ -54,6 +57,9 @@ function tranferData() {
                 // Display the pop-up
                 const popup = document.getElementById("popup");
                 popup.style.display = "block";
+
+                loadingIndicator.style.display = "none";
+
 
                 // Add an event listener to close the pop-up when the "OK" button is clicked
                 const okButton = document.getElementById("ok-button");
@@ -81,6 +87,8 @@ function tranferData() {
         })
         .catch(error => {
             console.error("Error:", error.message);
+
+            loadingIndicator.style.display = "none";
         });
     });
 }
@@ -428,8 +436,6 @@ function switchChart(clickedChart) {
     chart3Obj.resize(); 
 }
 
-
-
 // Main function
 function main(){
     document.getElementById("daily-button").addEventListener('click', function() {
@@ -479,6 +485,21 @@ function main(){
     
         tranferData();
         
+    });
+    
+    // Use the 'beforeunload' event to check if the user is leaving the site
+    window.addEventListener('beforeunload', function(event) {
+        if (isInternalNavigation) {
+            // Only clear local storage and interval when the user leaving the site
+            localStorage.clear();
+
+        // Send a message to the service worker to clear the cache
+        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
+            navigator.serviceWorker.controller.postMessage('clearCache');
+        }
+        }
+        // Reset the flag for future use
+        isInternalNavigation = true;
     });
 } 
 

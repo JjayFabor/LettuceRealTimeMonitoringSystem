@@ -5,24 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito+Sans:opsz@6..12&family=Oswald:wght@300;700&display=swap" rel="stylesheet">
     <script src="https://cdn.plot.ly/plotly-2.26.0.min.js" charset="utf-8"></script>
-    <title>Lettuce Growth Prediction</title>
+    <title>Lettuce Growth Forecasting</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <nav class="navbar">
         <div class="container">
             <ul class="nav-links">
-                <li><a href="/">Dashboard</a></li>
+                <li><a href="/realtime">Dashboard</a></li>
                 <li><a href="/historicaldata">Historical Data</a></li>
-                <li><a href="/growthPred" class="active">Growth Prediction</a></li>
+                <li><a href="/growthPred" class="active">Forecasting</a></li>
+                <li><a href="/logout" class="internal-link">Logout</a></li>
             </ul>
         </div>
     </nav>
     <main>
         <div>
-            <h2>Lettuce Growth Days Prediction</h2>
+            <h2>Lettuce Growth Days Forecasting</h2>
             <div class="growth-pred-buttons">
-                <button type="button" id="fetchPredictionsButton" onclick="fetchPredictions()">Predict</button>
+                <button type="button" id="fetchPredictionsButton" onclick="fetchPredictions()">Forecast</button>
                 <button type="button" id="downloadCSVButton"><a href="/download_csv" download="sensor_data.csv">Download CSV</a></button>
             </div>
             <h2>Prediction</h2>
