@@ -138,7 +138,7 @@ function initRealTimeCharts() {
                 {
                     label: 'TDS Value',
                     data: [],
-                    borderColor: 'black',
+                    borderColor: '#90EE90',
                     fill: false,
                     borderWidth: 2, 
                     tension: 0.5,

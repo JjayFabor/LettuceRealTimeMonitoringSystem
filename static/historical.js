@@ -178,6 +178,18 @@ function initCharts() {
                     },
                 },
             },
+            scales: {
+                x: {
+                    grid: {
+                        color: '#d3d3d3',
+                    },
+                },
+                y: {
+                    grid: {
+                        color: '#d3d3d3',
+                    },
+                },
+            },
             responsive: true,
         },
     });
@@ -191,7 +203,7 @@ function initCharts() {
                 {
                     label: 'TDS Value',
                     data: [],
-                    borderColor: 'black',
+                    borderColor: '#90EE90',
                     fill: false,
                     borderWidth: 2,
                     tension: 0.5,
@@ -234,11 +246,24 @@ function initCharts() {
                     },
                 },
             },
+            scales: {
+                x: {
+                    grid: {
+                        color: '#d3d3d3',
+                    },
+                },
+                y: {
+                    grid: {
+                        color: '#d3d3d3',
+                    },
+                },
+            },
             responsive: true,
         },
     });
 
     const phChart = new Chart(ctph, {
+        backgroundColor: 'rgba(255, 0, 0, 0.1)',
         type: 'line',
         data: {
             labels: [],
@@ -284,6 +309,18 @@ function initCharts() {
                             enabled: true,
                         },
                         mode: 'x',
+                    },
+                },
+            },
+            scales: {
+                x: {
+                    grid: {
+                        color: '#d3d3d3',
+                    },
+                },
+                y: {
+                    grid: {
+                        color: '#d3d3d3',
                     },
                 },
             },
@@ -501,6 +538,34 @@ function main(){
         // Reset the flag for future use
         isInternalNavigation = true;
     });
-} 
+}
+
+function downloadPDF(){
+    const fileNameInput = document.getElementById('fileNameInput');
+    const fileName = fileNameInput.value;
+
+    const canvas = document.getElementById('temp-hum-chart');
+    const canvas1 = document.getElementById('tds-chart');
+    const canvas2 = document.getElementById('ph-chart');
+    
+    const canvasImage = canvas.toDataURL('image/jpeg', 1.0);
+    const canvas1Image = canvas1.toDataURL('image/jpeg', 1.0);
+    const canvas2Image = canvas2.toDataURL('image/jpeg', 1.0);
+    console.log(canvasImage);
+
+    let pdf = new jsPDF('landscape');
+    pdf.setFontSize(20);
+    pdf.addImage(canvasImage, 'JPEG', 9, 30, 280, 150);
+
+    pdf.addPage();
+    pdf.setFontSize(20);
+    pdf.addImage(canvas1Image, 'JPEG', 9, 30, 280, 150);
+
+    pdf.addPage();
+    pdf.setFontSize(20);
+    pdf.addImage(canvas2Image, 'JPEG', 9, 30, 280, 150);
+
+    pdf.save(fileName + '.pdf');
+}
 
 main()
