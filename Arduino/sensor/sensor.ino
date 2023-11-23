@@ -92,10 +92,24 @@ void loop() {
 void getSensorValues() {
   char dateStr[32];
   char timeStr[32];
-//  static int dataID = 0;
+  //  static int dataID = 0;
   DateTime now = rtc.now();
   sprintf(dateStr, "%02d/%02d/%04d", now.month(), now.day(), now.year());
+  // Check if the month is "00" and replace it with "01"
+  if (dateStr[0] == '0' || dateStr[1] == '0') {
+    dateStr[0] = '0';
+    dateStr[1] = '1';
+  }
+
   sprintf(timeStr, "%02d:%02d", now.hour(), now.minute());
+  // Check if the timeStr exceeds 23:59 and replace it with 00:01
+  if (now.hour() == 23 && now.minute() == 59) {
+    timeStr[0] = '0';
+    timeStr[1] = '0';
+    timeStr[3] = '0';
+    timeStr[4] = '1';
+  }
+
   DHT.read11(DHT11_PIN);
   dhtTemp = DHT.temperature;
   float hum = DHT.humidity;
