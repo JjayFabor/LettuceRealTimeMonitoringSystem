@@ -385,6 +385,7 @@ function sensor() {
     fetch('/api/data')
     .then(response => response.json())
     .then(data => {
+        console.log(data);
         updateCharts(data, tempHumChart, tdsChart, phChart);
     })
     .catch(error => console.log(error));
@@ -485,21 +486,6 @@ function main(){
     
         tranferData();
         
-    });
-    
-    // Use the 'beforeunload' event to check if the user is leaving the site
-    window.addEventListener('beforeunload', function(event) {
-        if (isInternalNavigation) {
-            // Only clear local storage and interval when the user leaving the site
-            localStorage.clear();
-
-        // Send a message to the service worker to clear the cache
-        if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-            navigator.serviceWorker.controller.postMessage('clearCache');
-        }
-        }
-        // Reset the flag for future use
-        isInternalNavigation = true;
     });
 } 
 

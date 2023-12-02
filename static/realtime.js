@@ -383,7 +383,7 @@ function updateRealTimeCharts(sensorData){
 function populateChartsFromStorage() {
     const storedRawData = localStorage.getItem('sensorData');
     const storedData = JSON.parse(storedRawData);
-    const cleanStoredData = JSON.parse(JSON.stringify(storedData));  // Deep clone
+    const cleanStoredData = JSON.parse(JSON.stringify(storedData));
     
     console.log("Populate stored Data: ", cleanStoredData);
     
@@ -468,7 +468,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
 // Use the 'beforeunload' event to check if the user is leaving the site
 window.addEventListener('beforeunload', function(event) {
-  if (isInternalNavigation) {
+  if (!isInternalNavigation) {
     // Only clear local storage and interval when the user leaving the site
     localStorage.clear();
     // Send a message to the service worker to clear the cache
@@ -477,6 +477,6 @@ window.addEventListener('beforeunload', function(event) {
     }
   }
   // Reset the flag for future use
-  isInternalNavigation = true;
+  isInternalNavigation = false;
 });
 
