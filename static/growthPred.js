@@ -52,14 +52,22 @@ function fetchPredictions() {
         const dateRecord = data[0];
         startDate = new Date(dateRecord.Date);
         date = startDate.getDate();
-        console.log(dateRecord, startDate);
+        console.log("Start", startDate);
+        
+        // Use data[data.length - 1] to get the last element in the array
+        const lastDateRecord = data[data.length - 1];
 
-        growthPred(date);
+        lastDate = new Date(lastDateRecord.Date);
+        lastDataDate = lastDate.getDate();
+
+        growthPred(date, startDate, lastDate);
+        console.log("Last", lastDate);
+
     })
 }
 
 // Function to call or get the prediction of the lettuce growth day and display
-function growthPred(date){
+function growthPred(date, startDate, lastDate){
     // Fetch predictions
     fetch('/growthPred', {
         method: 'POST'
@@ -71,15 +79,16 @@ function growthPred(date){
             alert(data.error);
             return;
         }
-        
-        // Update the prediction display
-        const maxOptimalDays = 45;
+
         predictedGrowthDays = data.predictions; // Use the received prediction value
 
+        const daysPassed = Math.floor((lastDate - startDate) / (24 * 60 * 60 * 1000));
+        console.log('Days: ', daysPassed);
+        
         document.getElementById('predictionDisplay').innerText = "The predicted value is: " + predictedGrowthDays;
         
-        // Calculate the progress percentage based on the received prediction value
-        const progressPercentage = (predictedGrowthDays / maxOptimalDays) * 100;
+        // Calculate the progress percentage based on the difference
+        const progressPercentage = (daysPassed / Math.round(predictedGrowthDays)) * 100;
 
         // Update the progress bar width and numeric value
         const progressBar = document.getElementById('progress-bar');
@@ -128,17 +137,3 @@ function growthPred(date){
         console.error('Error fetching predictions:', error);
     });
 }
-
-// Use the 'beforeunload' event to check if the user is leaving the site
-window.addEventListener('beforeunload', function(event) {
-    if (isInternalNavigation) {
-      // Only clear local storage and interval when the user leaving the site
-      localStorage.clear();
-      // Send a message to the service worker to clear the cache
-      if ('serviceWorker' in navigator && navigator.serviceWorker.controller) {
-          navigator.serviceWorker.controller.postMessage('clearCache');
-      }
-    }
-    // Reset the flag for future use
-    isInternalNavigation = true;
-});
