@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import os
 import hashlib
 
-from Database.db_manager import create_table_if_not_exists, connect_to_database, get_current_batch_number, create_table_for_new_batch, fetch_batch_numbers
+from Database.db_manager import create_table_if_not_exists, connect_to_database
 from MLAlgo.src.pipeline.predict_pipeline import CustomData, PredictPipeline
 
 app = Flask(__name__, static_url_path='',static_folder='static',template_folder='templates')
@@ -47,7 +47,8 @@ arduino = None
 
 # Initialize serial port connection
 try:
-    arduino = serial.Serial('COM3', 9600, timeout=1)
+    # Change the '/dev/ttyACM*' to 'COM*' for Windows based on the port when arduino is connected 
+    arduino = serial.Serial('/dev/ttyACM0', 9600, timeout=1)
     if arduino.is_open:
         print("Serial port connected.")
     else:
@@ -147,45 +148,29 @@ def data():
     except Exception as e:
         return jsonify(error=str(e)) 
     
-# Define a variable to store the selected batch number
-selected_batch_number = None
-
 # Function to display the predicted growth days
-@app.route('/growthPred', methods=['POST'])
+@app.route('/growthPred', methods=['GET', 'POST'])
 def predict_datapoint():
-    try:
-        global selected_batch_number
-
-        # Check if the request contains JSON data
-        if request.is_json:
-            # Retrieve the selected batch number from the JSON data in the request
-            selected_batch_data = request.get_json()
-            selected_batch_number = selected_batch_data.get('selectedBatch')
-
-            print("Selected Batch number:", selected_batch_number)
-
-            # Continue processing the selected batch number
-            # Use the selected batch number to fetch data for that batch
-            custom_data = CustomData(csv_file_path=f'batch_{selected_batch_number}.csv')
-            csv_file = custom_data.export_to_csv(selected_batch_number)
+    if request.method == 'GET':
+        return render_template('growthPred.html', predictionDisplay="The predicted value will be displayed here.")
+    else:
+        try: 
+            custom_data = CustomData(csv_file_path='sensor_data.csv')
+            csv_file = custom_data.export_to_csv()
             
             data_df = pd.read_csv(csv_file)
             
             # drop the 'Time' header here
-            data_df = data_df.drop('Time', axis=1)
+            data_df.drop('Time', axis=1)
 
             # Call PredictPipeline() to predict the growth days
             predict = PredictPipeline()
             preds = predict.predict_days(data_df)
 
             return jsonify(predictions=preds)
-        else:
-            return jsonify(error="Request does not contain JSON data.")
-    except AttributeError as e:
-        # Catch the specific 'NoneType' object has no attribute 'get' error and continue
-        print(f"Ignoring error: {e}")
-        return jsonify(error="Prediction completed despite error.")
-    
+        except Exception as e:
+            return jsonify(error=str(e))
+        
 @app.route('/download_csv', methods=['GET'])
 def download_csv():
     try: 
@@ -322,17 +307,15 @@ def transfer_to_database():
         return jsonify({'status': 'error', 'message': str(e)})
 
 
-@app.route('/api/data/<int:batch_number>', methods=['GET'])
-def get_sensor_data(batch_number):
+# Create an API to store the sensor data
+@app.route('/api/data', methods=['GET'])
+def get_sensor_data():
     try:
         conn = connect_to_database()
         cursor = conn.cursor()
-
-        # Construct the table name based on the provided batch number
-        table_name = f'batch_{batch_number}'
-
-        # Execute SQL query to fetch all records from the specified batch
-        cursor.execute(f"SELECT * FROM {table_name}")
+    
+        # Execute SQL query to fetch all records
+        cursor.execute("SELECT * FROM sensor_data")
         records = cursor.fetchall()
 
         data = {}
@@ -343,7 +326,7 @@ def get_sensor_data(batch_number):
             temp = record[2]
             hum = record[3]
             tds = record[4]
-            ph = record[5]
+            ph = record[5] 
 
             # Check if the date already exists in data
             if date not in data:
@@ -359,41 +342,13 @@ def get_sensor_data(batch_number):
                 "pH Level": ph
             })
 
-        transformed_data = list(data.values())
+            transformed_data = list(data.values())
 
-        # Include batch number in the response
-        response = {
-            'data': transformed_data,
-            'batchNumber': batch_number
-        }
-
-        return jsonify(response)
-
-    except Exception as e:
-        return jsonify({'error': str(e)})
-
-
-@app.route('/api/batch_numbers', methods=['GET'])
-def get_batch_numbers():
-    try:
-        # Fetch batch numbers
-        batch_numbers = fetch_batch_numbers()
-        print(batch_numbers)
-
-        return jsonify({'batchNumbers': batch_numbers})
-
-    except Exception as e:
-        return jsonify({'error': str(e)})
-
-@app.route('/new_batch', methods=['POST'])
-def create_new_batch():
-    try:
-        batch_number = get_current_batch_number() + 1  # Increment the batch number
-        create_table_for_new_batch(batch_number)
-        return jsonify({'status': 'success', 'batch_number': batch_number})
-    except Exception as e:
-        return jsonify({'status': 'error', 'message': str(e)})
+        return jsonify(transformed_data)
     
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
 # Function to gracefully shutdown the Flask app
 @app.route('/shutdown', methods=['POST'])
 def shutdown():
@@ -406,4 +361,4 @@ def shutdown():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=8000, debug=True)
+    app.run(host='0.0.0.0', port=8000)
