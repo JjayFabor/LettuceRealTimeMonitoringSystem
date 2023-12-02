@@ -41,8 +41,8 @@ void createSensorFile() {
     myFile.close();
     // Serial.println(F("sensor.csv created."));
   }
-}
 
+}
 void setup() {
   Serial.begin(9600);
 
@@ -54,7 +54,7 @@ void setup() {
   pythonSerial.begin(9600);
 
   if (!SD.begin(chipSelect)) {
-    // Serial.println(F("SD card initialization failed."));
+    Serial.println(F("SD card initialization failed."));
     while (1);
   }
   // Serial.println(F("SD card initialized."));
@@ -71,7 +71,7 @@ void setup() {
 void loop() {
   unsigned long current_time = millis();
   // 300000      
-  if (current_time - lastSensorTime >= 300000) {
+  if (current_time - lastSensorTime >= 10000) {
     // Always update sensor values
     getSensorValues();
     lastSensorTime = current_time;
@@ -110,7 +110,7 @@ void getSensorValues() {
     timeStr[4] = '1';
   }
 
-  DHT.read11(DHT11_PIN);
+  int readData = DHT.read11(DHT11_PIN);
   dhtTemp = DHT.temperature;
   float hum = DHT.humidity;
   if (isnan(dhtTemp) || dhtTemp == -999 || isnan(hum) || hum == -999) {
@@ -180,16 +180,16 @@ void getSensorValues() {
     Serial.println(ph_act);
   }
 
-  if (tdsValue >= 200.00){
-    digitalWrite(tdsPump1, LOW);
-   // digitalWrite(tdsPump2, LOW);
-  } else if (tdsValue < 500.00) {
-    digitalWrite(tdsPump1, HIGH);
-   // digitalWrite(tdsPump2, HIGH);
-    delay(3000);
-    digitalWrite(tdsPump1, LOW);  // Turn off the dosing pump
-    //delay(5000);  // Wait for 10 minutes (600,000 milliseconds)
-  }
+  // if (tdsValue >= 200.00){
+  //   digitalWrite(tdsPump1, LOW);
+  //  // digitalWrite(tdsPump2, LOW);
+  // } else if (tdsValue < 500.00) {
+  //   digitalWrite(tdsPump1, HIGH);
+  //  // digitalWrite(tdsPump2, HIGH);
+  //   delay(3000);
+  //   digitalWrite(tdsPump1, LOW);  // Turn off the dosing pump
+  //   //delay(5000);  // Wait for 10 minutes (600,000 milliseconds)
+  // }
 }
 
 void sendFileContents() {
