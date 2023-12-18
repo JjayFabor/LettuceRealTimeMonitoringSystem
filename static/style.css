@@ -108,7 +108,7 @@ form {
   color: #721c24;
 }
 
-#daily-button:hover, #mins-button:hover, #transferButton:hover, #fetchPredictionsButton:hover, #downloadCSVButton:hover {
+#daily-button:hover, #mins-button:hover, #transferButton:hover, #fetchPredictionsButton:hover, #downloadCSVButton:hover, #newBatchButton:hover {
   background-color: #0056b3; 
 }
 
@@ -185,8 +185,24 @@ button {
   display: flex;
 }
 
+.batchNumbers {
+  display: flex;
+  align-items: center;
+}
+
+.batchNumbers label {
+  margin-right: 10px;
+}
+
 #selected-date {
   display: none;
+  height: 40px;
+  width: 200px;
+  font-size: 18px;
+  border-radius: 20px;
+}
+
+#selected-batch-number {
   height: 40px;
   width: 200px;
   font-size: 18px;

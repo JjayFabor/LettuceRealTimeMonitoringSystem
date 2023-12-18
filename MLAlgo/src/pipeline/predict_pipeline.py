@@ -43,15 +43,17 @@ class PredictPipeline:
             raise CustomException(e, sys)
 
 class CustomData:
-    def __init__(self, csv_file_path: str):
+    def __init__(self, csv_file_path: str, batch_number: int):
         self.csv_file_path = os.path.join(DATA_DIRECTORY, csv_file_path)
+        self.batch_number = batch_number
         
     def export_to_csv(self):
         try:
             conn = sqlite3.connect(DATABASE_PATH)
             cursor = conn.cursor()
 
-            cursor.execute('SELECT * FROM sensor_data')
+            table_name = f'batch_{self.batch_number}'
+            cursor.execute(f'SELECT * FROM {table_name}')
 
             data = cursor.fetchall()
 

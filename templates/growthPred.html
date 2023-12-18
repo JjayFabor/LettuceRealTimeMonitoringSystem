@@ -24,8 +24,14 @@
         <div>
             <h2>Lettuce Growth Days Forecasting</h2>
             <div class="growth-pred-buttons">
-                <button type="button" id="fetchPredictionsButton" onclick="fetchPredictions()">Forecast</button>
-                <button type="button" id="downloadCSVButton"><a href="/download_csv" download="sensor_data.csv">Download CSV</a></button>
+                <button type="button" id="fetchPredictionsButton" onclick="getCurrentBatchNumberAndFetchPredictions()">Forecast</button>
+                <button type="button" id="newBatchButton" style="display: none" onclick="newBatchClick()">New Batch</button>
+            </div>
+            <div id="popup" class="popup">
+                <div class="popup-content">
+                    <p id="success-message">New Batch Created Successfully!</p>
+                    <button id="ok-button">OK</button>
+                </div>
             </div>
             <h2>Prediction</h2>
             <p id="predictionDisplay">{{predictionDisplay}}</p>

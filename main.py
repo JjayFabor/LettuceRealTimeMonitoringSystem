@@ -6,7 +6,7 @@ from datetime import datetime, timedelta
 import os
 import hashlib
 
-from Database.db_manager import create_table_if_not_exists, connect_to_database
+from Database.db_manager import create_table_for_new_batch, connect_to_database, on_new_batch_button_click, get_current_batch_number
 from MLAlgo.src.pipeline.predict_pipeline import CustomData, PredictPipeline
 
 app = Flask(__name__, static_url_path='',static_folder='static',template_folder='templates')
@@ -154,14 +154,19 @@ def predict_datapoint():
     if request.method == 'GET':
         return render_template('growthPred.html', predictionDisplay="The predicted value will be displayed here.")
     else:
-        try: 
-            custom_data = CustomData(csv_file_path='sensor_data.csv')
+        try:
+            current_batch_number = get_current_batch_number()
+
+            if current_batch_number is None:
+                raise Exception('Failed to fetch the current batch number.')
+
+            custom_data = CustomData(csv_file_path=f'sensor_data_batch_{current_batch_number}.csv', batch_number=current_batch_number)
             csv_file = custom_data.export_to_csv()
-            
+
             data_df = pd.read_csv(csv_file)
-            
-            # drop the 'Time' header here
-            data_df.drop('Time', axis=1)
+
+            # Drop the 'Time' column here
+            data_df = data_df.drop('Time', axis=1)
 
             # Call PredictPipeline() to predict the growth days
             predict = PredictPipeline()
@@ -170,6 +175,7 @@ def predict_datapoint():
             return jsonify(predictions=preds)
         except Exception as e:
             return jsonify(error=str(e))
+
         
 @app.route('/download_csv', methods=['GET'])
 def download_csv():
@@ -186,8 +192,12 @@ def update_latest_data_from_database():
         with connect_to_database() as conn:
             cursor = conn.cursor()
 
+            # Fetch the current batch number from the file or database
+            current_batch_number = get_current_batch_number()
+
             # Query the database to get the last data
-            cursor.execute('SELECT Time, Date FROM sensor_data LIMIT 1 OFFSET (SELECT COUNT(*) FROM sensor_data) - 1')
+            table_name = f'batch_{current_batch_number}'
+            cursor.execute(f'SELECT Time, Date FROM {table_name} LIMIT 1 OFFSET (SELECT COUNT(*) FROM {table_name}) - 1')
             new_latest_data = cursor.fetchone()
             print(new_latest_data)
 
@@ -195,6 +205,7 @@ def update_latest_data_from_database():
                 latest_data['Time'], latest_data['Date'] = new_latest_data
     except Exception as e:
         print("Error updating latest data from the database: " + str(e))
+
 
 # Function to adjust the time and date in new data if needed
 def adjust_time_and_date_if_needed(new_data):
@@ -241,7 +252,11 @@ def transfer_to_database():
     print("Start transferring...")
 
     try:
-        create_table_if_not_exists()
+        # Fetch the current batch number from the file or database
+        current_batch_number = get_current_batch_number()
+
+        # create batch table if not exists
+        create_table_for_new_batch(current_batch_number)
 
         with connect_to_database() as conn:
             cursor = conn.cursor()
@@ -255,7 +270,7 @@ def transfer_to_database():
             while True:
                 transfer_line = arduino.readline().decode('utf-8').strip()
                 print(f"Raw data: {transfer_line}")
-                
+
                 if transfer_line == 'SEND_FILE':
                     print("SEND_FILE detected")
                     continue
@@ -282,12 +297,15 @@ def transfer_to_database():
                         update_latest_data_from_database()
                         adjust_time_and_date_if_needed(new_data)
 
-                        cursor.execute(
-                            'INSERT INTO sensor_data (Time, Date, Temperature, Humidity, TDS_Value, pH_Level) '
-                            'VALUES (?, ?, ?, ?, ?, ?)',
-                            (new_data['Time'], new_data['Date'], new_data['Temperature'], new_data['Humidity'], new_data['TDS_Value'], new_data['pH_Level'])
-                        )
+                        table_name = f'batch_{current_batch_number}'
                         
+                        cursor.execute(
+                            f'INSERT INTO {table_name} (Time, Date, Temperature, Humidity, TDS_Value, pH_Level) '
+                            'VALUES (?, ?, ?, ?, ?, ?)',
+                            (new_data['Time'], new_data['Date'], new_data['Temperature'], new_data['Humidity'],
+                             new_data['TDS_Value'], new_data['pH_Level'])
+                        )
+
                         conn.commit()
                         data_received = True
                     else:
@@ -301,21 +319,24 @@ def transfer_to_database():
             else:
                 print("No new data received.")
                 return jsonify({'status': 'no_data', 'message': 'No new data received.'})
-    
+
     except Exception as e:
         print("Error: " + str(e))
         return jsonify({'status': 'error', 'message': str(e)})
 
 
+
 # Create an API to store the sensor data
-@app.route('/api/data', methods=['GET'])
-def get_sensor_data():
+@app.route('/api/data/<int:batch_number>', methods=['GET'])
+def get_sensor_data(batch_number):
     try:
         conn = connect_to_database()
         cursor = conn.cursor()
     
+        table_name = f'batch_{batch_number}'
+ 
         # Execute SQL query to fetch all records
-        cursor.execute("SELECT * FROM sensor_data")
+        cursor.execute(f"SELECT * FROM {table_name}")
         records = cursor.fetchall()
 
         data = {}
@@ -349,6 +370,38 @@ def get_sensor_data():
     except Exception as e:
         return jsonify({'error': str(e)})
 
+# Function to a new batch in the database
+@app.route('/newBatch', methods=['POST'])
+def new_batch():
+    on_new_batch_button_click()
+
+    return "New Batch created successfully."
+
+# Function to get the numbers of the batch tables
+@app.route('/api/batch_numbers', methods=['GET'])
+def get_batch_numbers():
+    try: 
+        conn = connect_to_database()
+        cursor = conn.cursor()
+
+        # Execute SQL query to fetch all the batch numbers and table names
+        cursor.execute("SELECT batch_number, table_name FROM batch_info")
+        batch_info = cursor.fetchall()
+
+        return jsonify(batch_info)
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+# Function to get the current batch number of the database table used
+@app.route('/api/current_batch', methods=['GET'])
+def current_batch_number():
+    try:
+        # Fetch the current batch number from the file or database
+        current_batch_number = get_current_batch_number()
+        return jsonify({'current_batch_number': current_batch_number})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+    
 # Function to gracefully shutdown the Flask app
 @app.route('/shutdown', methods=['POST'])
 def shutdown():

@@ -315,6 +315,14 @@ function populateData(records) {
 
 // Function to update the charts sensor data for 5 mins sensor 
 function updateCharts(data, tempHumChart, tdsChart, phChart) {
+    // Check if data is an array
+    if (!Array.isArray(data)) {
+        // Display a message or handle the error case
+        console.log('Error or no data available for the selected batch.');
+        clearCharts(tempHumChart, tdsChart, phChart);
+        return;
+    }
+
     const dateSet = new Set();
 
     data.forEach(item => {
@@ -380,17 +388,6 @@ function setChartMode(mode) {
     chartMode = mode;
 }
 
-// Function to retrieve the sensor data in the API and update the chart.
-function sensor() {
-    fetch('/api/data')
-    .then(response => response.json())
-    .then(data => {
-        console.log(data);
-        updateCharts(data, tempHumChart, tdsChart, phChart);
-    })
-    .catch(error => console.log(error));
-}
-
 let chart1Obj, chart2Obj, chart3Obj; 
 
 // Function to switch chart to a bigger one
@@ -437,22 +434,107 @@ function switchChart(clickedChart) {
     chart3Obj.resize(); 
 }
 
-// Main function
-function main(){
-    document.getElementById("daily-button").addEventListener('click', function() {
-        var select = document.getElementById('selected-date');
-        select.style.display = 'none';
+// Function to clear the data in the charts if the batch table is empty
+function clearCharts(tempHumChart, tdsChart, phChart) {
+    // Clear data in the charts
+    tempHumChart.data.labels = [];
+    tempHumChart.data.datasets[0].data = [];
+    tempHumChart.data.datasets[1].data = [];
+    tempHumChart.update();
 
-        fetch('/api/data')
+    tdsChart.data.labels = [];
+    tdsChart.data.datasets[0].data = [];
+    tdsChart.update();
+
+    phChart.data.labels = [];
+    phChart.data.datasets[0].data = [];
+    phChart.update();
+}
+
+// Function to fetch batch numbers and populate the dropdown// Function to fetch batch numbers and populate the dropdown
+function fetchBatchNumbers() {
+    // Fetch batch numbers from the server (you need to define the API endpoint)
+    fetch('/api/batch_numbers')
         .then(response => response.json())
         .then(data => {
-            updateCharts(data, tempHumChart, tdsChart, phChart, 'date');
+            // Check for errors in the response
+            if (data.error) {
+                console.error(data.error);
+                return;
+            }
+
+            // Get the select element by its ID
+            const selectElement = document.getElementById('selected-batch-number');
+            
+            // Clear existing options
+            selectElement.innerHTML = '';
+
+            // Add an initial "Select Batch Number" option
+            const initialOption = document.createElement('option');
+            initialOption.value = '';
+            initialOption.text = 'Select Batch Number';
+            selectElement.add(initialOption);
+
+            // Iterate through the batch numbers and create option elements
+            data.forEach(batchInfo => {
+                const option = document.createElement('option');
+                const [batchNumber, tableName] = batchInfo;
+                option.value = batchNumber;
+                option.text = `Batch ${batchNumber}`;
+                selectElement.add(option);
+            });
+        })
+        .catch(error => console.error('Error fetching batch numbers:', error));
+}
+
+// Function to retrieve the sensor data in the API and update the chart.
+function sensor(batchNumber) {
+    // Clear local storage before fetching new batch data
+    localStorage.removeItem('sensorData');
+
+    fetch(`/api/data/${batchNumber}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Data ', data);
+            updateCharts(data, tempHumChart, tdsChart, phChart);
         })
         .catch(error => console.log(error));
-        setChartMode('date'); // Set the mode to 'date' when the daily button is clicked
+}
+
+
+// Main function
+function main(){ 
+    // Event listener for the batch number select change
+    document.getElementById("selected-batch-number").addEventListener('change', function() {
+        // Get the selected value from the dropdown
+        const selectedBatchNumber = this.value;
+
+        if (selectedBatchNumber) {
+            console.log("Batch number selected: ", selectedBatchNumber);
+
+            // Call the sensor function with the selected batch number
+            sensor(selectedBatchNumber);
+        }
     });
 
-    document.getElementById("mins-button").addEventListener('click', function() {
+    document.getElementById("daily-button").addEventListener('click', function () {
+        var select = document.getElementById('selected-date');
+        select.style.display = 'none';
+    
+        // Get the selected batch number
+        const selectedBatchNumber = document.getElementById('selected-batch-number').value;
+    
+        // Fetch data based on the selected batch number
+        fetch(`/api/data/${selectedBatchNumber}`)
+            .then(response => response.json())
+            .then(data => {
+                updateCharts(data, tempHumChart, tdsChart, phChart, 'date');
+            })
+            .catch(error => console.log(error));
+        setChartMode('date'); // Set the mode to 'date' when the daily button is clicked
+    });
+    
+    document.getElementById("mins-button").addEventListener('click', function () {
         // Toggle the visibility of the select element
         var select = document.getElementById('selected-date');
         if (select.style.display === 'none' || select.style.display === '') {
@@ -460,18 +542,21 @@ function main(){
         } else {
             select.style.display = 'none';
         }
-
-        fetch('/api/data')
-        .then(response => response.json())
-        .then(data => {
-            console.log(data);
-            updateCharts(data, tempHumChart, tdsChart, phChart, 'time');
-        })
-        .catch(error => console.log(error));
+    
+        // Get the selected batch number
+        const selectedBatchNumber = document.getElementById('selected-batch-number').value;
+    
+        // Fetch data based on the selected batch number
+        fetch(`/api/data/${selectedBatchNumber}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data);
+                updateCharts(data, tempHumChart, tdsChart, phChart, 'time');
+            })
+            .catch(error => console.log(error));
         setChartMode('time'); // Set the mode to 'time' when the 5 mins button is clicked
     });
-    
-    
+
     document.addEventListener("DOMContentLoaded", function() {
         const { tempHumChart: initialTempHumChart, tdsChart: initialTdsChart, phChart: initialPhChart } = initCharts();
         tempHumChart = initialTempHumChart;
@@ -481,9 +566,9 @@ function main(){
         chart1Obj = initialTempHumChart;
         chart2Obj = initialTdsChart;
         chart3Obj = initialPhChart;
+        
+        fetchBatchNumbers();
 
-        sensor();
-    
         tranferData();
         
     });

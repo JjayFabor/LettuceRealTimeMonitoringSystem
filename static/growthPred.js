@@ -36,10 +36,31 @@ let startDate;
 let date;
 let isInternalNavigation = false;
 
+// Fetch the current batch number from the server and call fetchPredictions with the current batch number table
+function getCurrentBatchNumberAndFetchPredictions() {
+    fetch('/api/current_batch')
+        .then(response => response.json())
+        .then(data => {
+            // Check for error in the response
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+
+            const currentBatchNumber = data.current_batch_number;
+
+            // Now that you have the current batch number, fetch predictions
+            fetchPredictions(currentBatchNumber);
+        })
+        .catch(error => {
+            console.error('Error fetching current batch number:', error);
+        });
+}
+
 // fetch predictions
-function fetchPredictions() {
+function fetchPredictions(batchNumber) {
     // fetch 'date' from the database API
-    fetch('/api/data')
+    fetch(`/api/data/${batchNumber}`)
     .then(response => response.json())
     .then(data=> {
         console.log(data);
@@ -64,6 +85,52 @@ function fetchPredictions() {
         console.log("Last", lastDate);
 
     })
+}
+
+
+// Function create a new batch in the database
+function newBatchClick() {
+    fetch('/newBatch', {
+        method: 'POST'
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log('New Batch created successfully');
+
+            // Show success popup
+            showSuccessPopup();
+
+            document.getElementById('predictionDisplay').innerText = '';
+
+            // Hide the calendar chart
+            document.getElementById('calendar-view').style.display = 'none';
+
+            // Reset the progress bar to 0
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = '0%';
+            progressBar.innerText = '0%';
+        } else {
+            console.error('Error creating new batch');
+        }
+    })
+    .catch(error => {
+        console.error('Error creating new batch:', error);
+    })
+}
+
+// Function to show a success popup
+function showSuccessPopup() {
+    const successPopup = document.getElementById('popup');
+    const newBatchButton = document.getElementById('newBatchButton');
+
+    successPopup.style.display = 'block';
+
+    // Add an event listener to close the pop-up when the "OK" button is clicked
+    const okButton = document.getElementById("ok-button");
+    okButton.addEventListener("click", () => {
+        successPopup.style.display = "none";
+        newBatchButton.style.display = "none";
+    });
 }
 
 // Function to call or get the prediction of the lettuce growth day and display
@@ -94,6 +161,10 @@ function growthPred(date, startDate, lastDate){
         const progressBar = document.getElementById('progress-bar');
         progressBar.style.width = `${progressPercentage}%`;
         progressBar.innerText = `${progressPercentage.toFixed(2)}%`;
+
+        // Show or hide the "New Batch" button based on the progress bar
+        const newBatchButton = document.getElementById('newBatchButton');
+        newBatchButton.style.display = progressPercentage === 100 ? 'block' : 'none';
 
         let predictedHarvestDate = new Date(startDate);
         predictedHarvestDate.setDate(date + predictedGrowthDays);
@@ -137,3 +208,12 @@ function growthPred(date, startDate, lastDate){
         console.error('Error fetching predictions:', error);
     });
 }
+
+
+
+document.addEventListener("DOMContentLoaded", function() {
+
+    // Set initial progressBar width to 0%
+    const progressBar = document.getElementById('progress-bar');
+    progressBar.style.width = '0%';
+});

@@ -27,13 +27,24 @@
         <div class="transferButton-div">
             <button type="button" id="transferButton">Transfer Data</button>
             <div class="loader" id="loadingIndicator"></div>
+            <button type="button" id="downloadCSVButton"><a href="/download_csv" download="sensor_data.csv">Download CSV</a></button>
+        </div>
+        <div id="popup" class="popup">
+            <div class="popup-content">
+                <p id="success-message">Data transfer successful!</p>
+                <button id="success-ok-button">OK</button>
+            </div>
         </div>
         <div id="error-popup" class="popup">
             <div class="popup-content">
                 <p id="error-message">Error during transfer</p>
                 <button id="error-ok-button">OK</button>
             </div>
-        </div>        
+        </div>
+        <div class="batchNumbers">
+            <label for="selected-batch-number">Batch Number:</label>
+            <select id="selected-batch-number" name="selected-batch-number" style="display: block"></select>
+        </div>      
         <div class="buttons">
             <div class="mins-div">
                 <button type="button" id="mins-button">5 mins</button>
