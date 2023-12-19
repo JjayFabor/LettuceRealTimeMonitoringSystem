@@ -17,6 +17,6 @@ Follow these steps to get the application up and running on your local machine.
    git clone https://github.com/JjayFabor/LettuceRealTimeMonitoringSystem.git
    cd LettuceRealTimeMonitoringSystem
    pip install -r requirements.txt
-   python app.py
+   python main.py
    
 ## Search <ins>127.0.0.1:8000</ins> in your browser
