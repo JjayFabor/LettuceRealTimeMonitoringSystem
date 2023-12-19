@@ -131,6 +131,7 @@ function initCharts() {
                     fill: false,
                     tension: 0.5,
                     borderColor: '#2691DA',
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
                 },
                 {
                     label: 'Humidity',
@@ -138,6 +139,7 @@ function initCharts() {
                     fill: false,
                     tension: 0.5,
                     borderColor: '#F1C72C', 
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
                     borderWidth: 2,
                 },
             ],
@@ -191,10 +193,11 @@ function initCharts() {
                 {
                     label: 'TDS Value',
                     data: [],
-                    borderColor: 'black',
+                    borderColor: 'green',
                     fill: false,
                     borderWidth: 2,
                     tension: 0.5,
+                    backgroundColor: 'rgba(255, 255, 255, 0.8)',
                 },
             ],
         },
@@ -249,6 +252,7 @@ function initCharts() {
                 fill: false,
                 borderWidth: 2,
                 tension: 0.5,
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
             }]
         },
         plugins: [noData],
@@ -537,6 +541,43 @@ function downloadCSV(batchNumber) {
         .catch(error => console.error('Error fetching data for CSV:', error));
 }
 
+
+function downloadPDF(){
+    const canvas = document.getElementById('temp-hum-chart');
+    const canvas1 = document.getElementById('tds-chart');
+    const canvas2 = document.getElementById('ph-chart');
+
+    const canvasImage = canvas.toDataURL('image/png', 1.0);
+    const canvas1Image = canvas1.toDataURL('image/png', 1.0);
+    const canvas2Image = canvas2.toDataURL('image/png', 1.0);
+
+    let pdf = new jsPDF('landscape');
+
+    // Add title based on the selected batch date or mode
+    const selectedBatchNumber = document.getElementById('selected-batch-number').value;
+    const selectedDate = document.getElementById('selected-date').value;
+
+    if (selectedDate) {
+        pdf.setFontSize(20);
+        pdf.text(`Chart Visualization - Batch ${selectedBatchNumber}, Date: ${selectedDate}`, 15, 15);
+    } else {
+        pdf.setFontSize(30);
+        pdf.text(`Chart Visualization - Batch ${selectedBatchNumber}, Mode: Daily`, 15, 15);
+    }
+
+    pdf.addImage(canvasImage, 'JPEG', 9, 30, 280, 150);
+
+    pdf.addPage();
+    pdf.setFontSize(20);
+    pdf.addImage(canvas1Image, 'JPEG', 9, 30, 280, 150);
+
+    pdf.addPage();
+    pdf.setFontSize(20);
+    pdf.addImage(canvas2Image, 'JPEG', 9, 30, 280, 150);
+
+    pdf.save('chart.pdf');
+}
+
 // Main function
 function main(){ 
     // Event listener for the batch number select change
@@ -622,7 +663,6 @@ function main(){
             console.log("Please select a batch number before downloading.");
         }
     });
-
 } 
 
 main()

@@ -234,14 +234,16 @@ def transfer_to_database():
 
 
 # Create an API to store the sensor data
-@app.route('/api/data', methods=['GET'])
-def get_sensor_data():
+@app.route('/api/data/<int:batch_number>', methods=['GET'])
+def get_sensor_data(batch_number):
     try:
         conn = connect_to_database()
         cursor = conn.cursor()
-    
+
+        table_name = f'batch_{batch_number}'
+
         # Execute SQL query to fetch all records
-        cursor.execute("SELECT * FROM sensor_data")
+        cursor.execute(f"SELECT * FROM {table_name}")
         records = cursor.fetchall()
 
         data = {}

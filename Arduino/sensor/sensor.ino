@@ -54,7 +54,7 @@ void setup() {
   pythonSerial.begin(9600);
 
   if (!SD.begin(chipSelect)) {
-    Serial.println(F("SD card initialization failed."));
+    // Serial.println(F("SD card initialization failed."));
     while (1);
   }
   // Serial.println(F("SD card initialized."));
@@ -101,13 +101,12 @@ void getSensorValues() {
     dateStr[1] = '1';
   }
 
-  sprintf(timeStr, "%02d:%02d", now.hour(), now.minute());
-  // Check if the timeStr exceeds 23:59 and replace it with 00:01
-  if (now.hour() == 23 && now.minute() == 59) {
-    timeStr[0] = '0';
-    timeStr[1] = '0';
-    timeStr[3] = '0';
-    timeStr[4] = '1';
+  // Format time
+  if (now.hour() >= 0 && now.hour() <= 23 && now.minute() >= 0 && now.minute() <= 59) {
+    sprintf(timeStr, "%02d:%02d", now.hour(), now.minute());
+  } else {
+    // Handle invalid time values, set to a default value (e.g., 00:00)
+    sprintf(timeStr, "00:00");
   }
 
   int readData = DHT.read11(DHT11_PIN);

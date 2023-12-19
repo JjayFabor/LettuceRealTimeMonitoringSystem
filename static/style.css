@@ -108,7 +108,7 @@ form {
   color: #721c24;
 }
 
-#daily-button:hover, #mins-button:hover, #transferButton:hover, #fetchPredictionsButton:hover, #downloadCSVButton:hover, #newBatchButton:hover {
+#daily-button:hover, #mins-button:hover, #transferButton:hover, #fetchPredictionsButton:hover, #downloadCSVButton:hover, #newBatchButton:hover, #pdf-button:hover {
   background-color: #0056b3; 
 }
 
