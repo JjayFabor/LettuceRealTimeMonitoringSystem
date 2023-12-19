@@ -541,7 +541,7 @@ function downloadCSV(batchNumber) {
         .catch(error => console.error('Error fetching data for CSV:', error));
 }
 
-
+// Function to download the charts visualization data as pdf
 function downloadPDF(){
     const canvas = document.getElementById('temp-hum-chart');
     const canvas1 = document.getElementById('tds-chart');
@@ -565,15 +565,15 @@ function downloadPDF(){
         pdf.text(`Chart Visualization - Batch ${selectedBatchNumber}, Mode: Daily`, 15, 15);
     }
 
-    pdf.addImage(canvasImage, 'JPEG', 9, 30, 280, 150);
+    pdf.addImage(canvasImage, 'PNG', 9, 30, 280, 150);
 
     pdf.addPage();
     pdf.setFontSize(20);
-    pdf.addImage(canvas1Image, 'JPEG', 9, 30, 280, 150);
+    pdf.addImage(canvas1Image, 'PNG', 9, 30, 280, 150);
 
     pdf.addPage();
     pdf.setFontSize(20);
-    pdf.addImage(canvas2Image, 'JPEG', 9, 30, 280, 150);
+    pdf.addImage(canvas2Image, 'PNG', 9, 30, 280, 150);
 
     pdf.save('chart.pdf');
 }
