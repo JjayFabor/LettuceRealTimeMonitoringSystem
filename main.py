@@ -176,14 +176,6 @@ def predict_datapoint():
         except Exception as e:
             return jsonify(error=str(e))
 
-        
-@app.route('/download_csv', methods=['GET'])
-def download_csv():
-    try: 
-        return send_file('Database/sensor_data.csv', as_attachment=True)
-    except Exception as e:
-        return jsonify(error=str(e))
-
 latest_data = {'Time': '00:00', 'Date': '01/01/2000'}
 
 # Function to update the latest data with the data from the database

@@ -502,6 +502,41 @@ function sensor(batchNumber) {
 }
 
 
+// Function to download CSV file
+function downloadCSV(batchNumber) {
+    fetch(`/api/data/${batchNumber}`)
+        .then(response => response.json())
+        .then(data => {
+            console.log('Download CSV Data:', data);
+
+            if (!Array.isArray(data)) {
+                console.error('Invalid data structure. Unable to download CSV.');
+                return;
+            }
+
+            // Convert data to CSV format
+            const csvContent = "Date,Time,Temperature,Humidity,TDS Value,pH Level\n" +
+                data.flatMap(dateEntry =>
+                    dateEntry.Records.map(record =>
+                        `${dateEntry.Date},${record.Time},${record.Temperature},${record.Humidity},${record['TDS Value']},${record['pH Level']}`
+                    )
+                ).join("\n");
+
+            // Create a blob and create a download link
+            const blob = new Blob([csvContent], { type: "text/csv" });
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `batch_${batchNumber}_data.csv`;
+
+            // Append the link to the document and trigger the click
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        })
+        .catch(error => console.error('Error fetching data for CSV:', error));
+}
+
 // Main function
 function main(){ 
     // Event listener for the batch number select change
@@ -572,6 +607,22 @@ function main(){
         tranferData();
         
     });
+
+    // Add event listener for the download button
+    document.getElementById("downloadCSVButton").addEventListener("click", function () {
+        // Get the selected batch number
+        const selectedBatchNumber = document.getElementById('selected-batch-number').value;
+
+        // Check if a batch number is selected before triggering the download
+        if (selectedBatchNumber) {
+            // Call the downloadCSV function with the selected batch number
+            downloadCSV(selectedBatchNumber);
+        } else {
+            alert("Please select a batch number before downloading");
+            console.log("Please select a batch number before downloading.");
+        }
+    });
+
 } 
 
 main()
